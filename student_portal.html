@@ -24,6 +24,7 @@
       --radius: 10px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { max-width: 100%; overflow-x: hidden; }
     body {
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
       background: var(--bg);
@@ -36,33 +37,34 @@
     .topbar {
       background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
       color: #fff;
-      padding: 12px 18px;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
       box-shadow: 0 2px 10px rgba(0,0,0,0.16);
       z-index: 30;
     }
-    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
     .brand-badge {
       background: #3b82f6;
       color: #fff;
       font-weight: 700;
       padding: 5px 9px;
       border-radius: 7px;
-      font-size: 11.5px;
+      font-size: 11px;
       letter-spacing: 0.4px;
       white-space: nowrap;
+      flex-shrink: 0;
     }
-    .brand h1 { font-size: 15.5px; font-weight: 700; line-height: 1.25; }
-    .brand p { font-size: 11.5px; color: #93c5fd; margin-top: 2px; }
-    .toolbar-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .brand h1 { font-size: 15px; font-weight: 700; line-height: 1.25; }
+    .brand p { font-size: 11px; color: #93c5fd; margin-top: 2px; }
+    .toolbar-actions { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
     .fb-status {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
+      gap: 6px;
       padding: 6px 11px;
       border-radius: 999px;
       font-size: 11.5px;
@@ -76,8 +78,8 @@
 
     .btn {
       border: none;
-      padding: 9px 14px;
-      min-height: 38px;
+      padding: 9px 13px;
+      min-height: 40px;
       border-radius: 8px;
       font-size: 13px;
       font-weight: 600;
@@ -100,47 +102,66 @@
     .btn-purple:hover { background: #6d28d9; }
     .btn-danger { background: #dc2626; color: #fff; }
     .btn-danger:hover { background: #b91c1c; }
-    .btn-ghost {
-      background: #f1f5f9;
-      color: #334155;
-      border: 1px solid #cbd5e1;
-    }
+    .btn-ghost { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
     .btn-ghost:hover { background: #e2e8f0; }
-    .btn-sm { padding: 7px 10px; min-height: 34px; font-size: 12px; }
-    .btn-lg { padding: 13px 22px; min-height: 46px; font-size: 15px; border-radius: 9px; }
+    .btn-sm { padding: 7px 10px; min-height: 36px; font-size: 12px; }
+    .btn-lg { padding: 13px 20px; min-height: 48px; font-size: 15px; border-radius: 9px; }
+
+    .webview-warn {
+      display: none;
+      background: #fef3c7;
+      color: #92400e;
+      border-bottom: 1px solid #fcd34d;
+      padding: 8px 14px;
+      font-size: 12.5px;
+      font-weight: 600;
+      text-align: center;
+    }
 
     /* Shared Cards & Form Controls */
     .card {
       background: var(--surface);
       border-radius: var(--radius);
       border: 1px solid var(--border);
-      padding: 16px 18px;
-      margin-bottom: 16px;
+      padding: 15px 16px;
+      margin-bottom: 14px;
       box-shadow: 0 1px 4px rgba(0,0,0,0.03);
     }
     .card-highlight { border: 2px solid #3b82f6; background: #fbfdff; }
     .card-title {
-      font-size: 15px; font-weight: 700; color: var(--primary);
+      font-size: 14.5px; font-weight: 700; color: var(--primary);
       margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #e2e8f0;
       display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
     }
     .grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
-    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
     .form-group.span-2 { grid-column: span 2; }
     .form-group label {
       font-size: 12px; font-weight: 700; color: #334155;
-      display: flex; align-items: center; justify-content: space-between; gap: 6px;
+      display: flex; align-items: center; justify-content: space-between; gap: 6px; flex-wrap: wrap;
     }
     .req { color: #dc2626; margin-left: 2px; }
     .form-control {
-      padding: 10px 12px; min-height: 42px;
+      padding: 10px 12px; min-height: 44px;
       border: 1px solid var(--border); border-radius: 7px;
       font-size: 14px; color: var(--text); background: #fff; outline: none; width: 100%;
+      max-width: 100%;
+    }
+    select.form-control {
+      background-color: #fff;
+      cursor: pointer;
     }
     .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(37,99,235,0.16); }
     .form-control.empty-req { border-color: #f87171; background: #fff8f8; }
 
-    /* Upload Cards (Mobile-Friendly with Camera + File buttons) */
+    /* Searchable Select Combo Box (works 100% on Android/iOS!) */
+    .school-picker-wrap { display: flex; flex-direction: column; gap: 6px; }
+    .school-filter-mini {
+      padding: 7px 10px; min-height: 36px; font-size: 13px;
+      border: 1px dashed #93c5fd; border-radius: 6px; background: #f8fafc; width: 100%;
+    }
+
+    /* Upload Cards */
     .upload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 12px; }
     .upload-box {
       border: 2px dashed #94a3b8;
@@ -155,7 +176,7 @@
     .upload-box h4 { font-size: 13px; font-weight: 700; color: #0f172a; }
     .upload-box p { font-size: 11px; color: var(--muted); line-height: 1.35; }
     .photo-preview { width: 72px; height: 82px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; display: none; }
-    .file-status { font-size: 11.5px; font-weight: 700; word-break: break-all; }
+    .file-status { font-size: 11.5px; font-weight: 700; word-break: break-word; }
     .tag-conv { display: inline-block; background: #ede9fe; color: #6d28d9; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-left: 3px; }
     .doc-btn-row { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; width: 100%; }
 
@@ -163,14 +184,13 @@
       position: fixed; bottom: 20px; right: 16px; left: auto;
       background: #0f172a; color: #fff;
       padding: 12px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.25); display: none; z-index: 200; max-width: 420px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25); display: none; z-index: 250; max-width: 420px;
     }
 
-    /* In-page Document Preview Modal (Mobile & Desktop friendly, zero popup blocker issues) */
     .preview-modal-backdrop {
       position: fixed; inset: 0; background: rgba(15,23,42,0.72);
       display: none; align-items: center; justify-content: center;
-      padding: 16px; z-index: 300;
+      padding: 12px; z-index: 300;
     }
     .preview-modal-card {
       background: #fff; width: 100%; max-width: 820px; max-height: 92vh;
@@ -178,28 +198,32 @@
       box-shadow: 0 20px 50px rgba(0,0,0,0.35);
     }
     .preview-modal-head {
-      padding: 12px 16px; background: #0f172a; color: #fff;
-      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      padding: 12px 14px; background: #0f172a; color: #fff;
+      display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
     }
     .preview-modal-body {
-      padding: 16px; overflow-y: auto; text-align: center; background: #f8fafc; flex: 1;
+      padding: 14px; overflow-y: auto; text-align: center; background: #f8fafc; flex: 1;
     }
     .preview-modal-body img {
       max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #cbd5e1; margin-bottom: 10px;
     }
     .preview-modal-body iframe {
-      width: 100%; height: 64vh; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff;
+      width: 100%; height: 60vh; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff;
     }
 
     @media (max-width: 720px) {
-      .topbar { padding: 10px 14px; }
-      .brand h1 { font-size: 14.5px; }
+      .topbar { padding: 10px 12px; }
+      .brand h1 { font-size: 14px; }
+      .toolbar-actions { width: 100%; justify-content: flex-start; }
+      .toolbar-actions .btn { flex: 1; min-width: 130px; font-size: 12px; padding: 8px 10px; }
       .form-group.span-2 { grid-column: span 1; }
       .grid-3 { grid-template-columns: 1fr; }
       .upload-grid { grid-template-columns: 1fr; }
-      .form-control { font-size: 16px; min-height: 44px; }
-      .btn { min-height: 42px; }
-      .toast { left: 12px; right: 12px; bottom: 78px; max-width: none; text-align: center; }
+      .form-control { font-size: 16px; min-height: 46px; }
+      .school-filter-mini { font-size: 15px; min-height: 40px; }
+      .btn { min-height: 44px; }
+      .doc-btn-row .btn { flex: 1 1 44%; }
+      .toast { left: 10px; right: 10px; bottom: 72px; max-width: none; text-align: center; }
     }
 
 
@@ -208,43 +232,43 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px 14px;
+      padding: 20px 12px;
       background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%);
     }
     .login-card {
       background: #ffffff; max-width: 500px; width: 100%;
-      border-radius: 14px; padding: 28px 22px;
+      border-radius: 14px; padding: 26px 20px;
       box-shadow: 0 12px 30px rgba(15,23,42,0.1);
       border: 1px solid #cbd5e1; text-align: center;
     }
     .login-icon {
-      width: 64px; height: 64px; border-radius: 50%;
+      width: 60px; height: 60px; border-radius: 50%;
       background: var(--primary-light); color: var(--primary);
       display: inline-flex; align-items: center; justify-content: center;
-      font-size: 30px; margin-bottom: 14px;
+      font-size: 28px; margin-bottom: 12px;
     }
-    .login-card h2 { font-size: 21px; font-weight: 800; margin-bottom: 6px; }
-    .login-card p { font-size: 13.5px; color: var(--muted); margin-bottom: 20px; line-height: 1.45; }
-    .login-input-group { display: flex; flex-direction: column; gap: 8px; text-align: left; margin-bottom: 18px; }
+    .login-card h2 { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+    .login-card p { font-size: 13.5px; color: var(--muted); margin-bottom: 18px; line-height: 1.45; }
+    .login-input-group { display: flex; flex-direction: column; gap: 8px; text-align: left; margin-bottom: 16px; }
     .login-input-group label { font-size: 13px; font-weight: 700; color: #334155; }
     .aadhaar-input {
-      width: 100%; padding: 14px 14px; font-size: 20px; font-weight: 700;
+      width: 100%; padding: 14px 12px; font-size: 20px; font-weight: 700;
       letter-spacing: 2px; text-align: center; border: 2px solid var(--border);
       border-radius: 9px; outline: none; transition: all 0.15s;
     }
     .aadhaar-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.18); }
-    .login-alt-toggle { font-size: 12.5px; color: #2563eb; font-weight: 600; cursor: pointer; margin-top: 12px; text-decoration: underline; display: inline-block; }
+    .login-alt-toggle { font-size: 13px; color: #2563eb; font-weight: 600; cursor: pointer; margin-top: 12px; text-decoration: underline; display: inline-block; padding: 6px; }
     .login-err { background: var(--danger-bg); color: var(--danger); padding: 10px 14px; border-radius: 7px; font-size: 13px; font-weight: 600; margin-bottom: 14px; display: none; }
 
     #studentPortalView {
       flex: 1; display: none; flex-direction: column;
       max-width: 1080px; width: 100%; margin: 0 auto;
-      padding: 16px 14px 90px 14px;
+      padding: 14px 12px 90px 12px;
     }
     .student-banner {
       background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 16px 18px; margin-bottom: 14px;
-      display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+      padding: 14px 16px; margin-bottom: 14px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
       box-shadow: 0 2px 6px rgba(0,0,0,0.03);
     }
     .stu-profile-head h2 { font-size: 18px; font-weight: 800; }
@@ -257,11 +281,11 @@
       border-radius: 8px; margin-bottom: 14px; font-size: 13px; color: #1e40af; line-height: 1.5;
     }
     .bottom-save-bar {
-      position: sticky; bottom: 8px; background: #ffffff;
-      padding: 12px 16px; border-radius: var(--radius); border: 2px solid #22c55e;
-      box-shadow: 0 -4px 18px rgba(0,0,0,0.12);
+      background: #ffffff;
+      padding: 14px 16px; border-radius: var(--radius); border: 2px solid #22c55e;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.09);
       display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-      margin-top: 18px; z-index: 15;
+      margin-top: 16px;
     }
     @media (max-width: 640px) {
       .bottom-save-bar button { width: 100%; }
@@ -271,12 +295,13 @@
   </style>
 </head>
 <body>
+  <div id="webviewWarn" class="webview-warn">📱 Tip: If Camera or File button doesn't open inside WhatsApp/viewer, tap <strong>⋮ Menu → Open in Chrome</strong>.</div>
   <header class="topbar">
     <div class="brand">
       <span class="brand-badge">STUDENT PORTAL</span>
       <div>
         <h1>Banishree 2026-27 — Student Update</h1>
-        <p>Update Your Details • Snap Documents with Camera (Auto PDF)</p>
+        <p>Mobile-Friendly Dropdowns • Snap Documents with Camera (Auto PDF)</p>
       </div>
     </div>
     <div class="toolbar-actions">
@@ -287,168 +312,11 @@
     </div>
   </header>
 
-  <datalist id="portalSchoolsList">
-    <option value="A. GHOTARLA UPS"></option>
-    <option value="ALUPADAR PS"></option>
-    <option value="AMADAMUNDA PROJ UPS"></option>
-    <option value="AMALABHATA PS"></option>
-    <option value="AMBAGAMA PROJ UPS"></option>
-    <option value="ANKULA UPS"></option>
-    <option value="B.DHARGUDI PS"></option>
-    <option value="B.GHATARLA PROJ UPS"></option>
-    <option value="BADA ANDIRAMUNDA PROJ UPS"></option>
-    <option value="BAGHACHUAN PROJ UPS"></option>
-    <option value="BAKTIGUDA PROJ PS"></option>
-    <option value="BANDHAGUDA PROJ UPS"></option>
-    <option value="BANUAGUDA PROJ PS"></option>
-    <option value="BASTAMBA UPS"></option>
-    <option value="BASULI PS"></option>
-    <option value="BATAKUHUDI UPS"></option>
-    <option value="BEDHAGUDA PROJ PS"></option>
-    <option value="BELGAM PS"></option>
-    <option value="BENTAGUDA PS"></option>
-    <option value="BHANSULI UPS"></option>
-    <option value="BHURSI PROJ UPS"></option>
-    <option value="BIBEKANANDA HIGH SCHOOL, PHUPUGAM"></option>
-    <option value="BIJRAPALLI PROJ UPS"></option>
-    <option value="BIRAHANDI PS"></option>
-    <option value="BOBEYA PROJ UPS"></option>
-    <option value="BONDAGUDA UPS"></option>
-    <option value="BONIA PROJ UPS"></option>
-    <option value="BORANDI PROJ UPS"></option>
-    <option value="BOTASANA SS"></option>
-    <option value="BOTASONA PROJ PS"></option>
-    <option value="CHANDILI HIGH SCHOOL, CHANDILI"></option>
-    <option value="CHANDILI UPS"></option>
-    <option value="CHHATARLA UGHS"></option>
-    <option value="CHICHILIPUT(BHAJIGUDA) PS"></option>
-    <option value="CHILIGUDA PS"></option>
-    <option value="CHITAGAM SS"></option>
-    <option value="CHITRA SS"></option>
-    <option value="CHITRAGUDA PROJ UPS"></option>
-    <option value="CHORAMULA PROJ UPS"></option>
-    <option value="COLONY NO -6 PROJ PS"></option>
-    <option value="COLONY NO-4 PROJ PS"></option>
-    <option value="COLONY NO-7 UPS"></option>
-    <option value="DANGARI UPS"></option>
-    <option value="DEORLI PS"></option>
-    <option value="DONGRIGUDA UPS"></option>
-    <option value="EKAMBA PS"></option>
-    <option value="GIRLA HS"></option>
-    <option value="GOVT. GIRLS HIGH SCHOOL, KOTPAD"></option>
-    <option value="GOVT. HIGH SCHOOL, DHAMANAHANDI"></option>
-    <option value="GOVT. HIGH SCHOOL, KOTPAD"></option>
-    <option value="GOVT. NODAL HIGH SCHOOL, KUSUMI"></option>
-    <option value="GOVT. SSD HIGHER SECONDARY SCHOOL, KOTPAD"></option>
-    <option value="GOVT. U.G. HIGH SCHOOL, ASANA"></option>
-    <option value="GOVT. U.G. HIGH SCHOOL, GHUMAR"></option>
-    <option value="GOVT. U.G. HIGH SCHOOL, GUMUDA"></option>
-    <option value="GOVT. U.G. HIGH SCHOOL, KURMAKOT"></option>
-    <option value="GOVT. U.G. HIGH SCHOOL, MIRIGUDA"></option>
-    <option value="GOVT. U.G. HIGH SCHOOL, MURTAHANDI"></option>
-    <option value="Government (SSD) Higher Secondary School, Kotpad"></option>
-    <option value="Government Vocational Higher Secondary School, Kotpad"></option>
-    <option value="Govt. ITI Kotpad, Koraput"></option>
-    <option value="HARDOLI PS"></option>
-    <option value="JAMAL UPS"></option>
-    <option value="JELC HIGH SCHOOL, KOTPAD"></option>
-    <option value="JELC UPS, KOTPAD"></option>
-    <option value="KALINJI STREET UPS"></option>
-    <option value="KANDAGAM PS"></option>
-    <option value="KANGIAGUDA PS"></option>
-    <option value="KENDUGUDA UPS"></option>
-    <option value="KHADAGPUR UPS"></option>
-    <option value="KHAPURIGUDA PS"></option>
-    <option value="KUSUMI PS"></option>
-    <option value="Kotpad (Degree) College, Kotpad"></option>
-    <option value="Kotpad Higher Secondary School, Kotpad"></option>
-    <option value="LALMUNDA UPS"></option>
-    <option value="LATHIAGUDA PS"></option>
-    <option value="M.TARAGAM PS"></option>
-    <option value="MAKAPUT UPS"></option>
-    <option value="MALCHAMAL PS"></option>
-    <option value="MANGALI STREET PS"></option>
-    <option value="MOHANTIPUT UPS"></option>
-    <option value="MUNDAGUDA UPS"></option>
-    <option value="MUNDIPADAR UPS"></option>
-    <option value="NAIKGUDA PS"></option>
-    <option value="NANDIGAM UPS"></option>
-    <option value="NARAHANDI UPS"></option>
-    <option value="NEHERUPALLI UPS"></option>
-    <option value="NUAGADA PS"></option>
-    <option value="NUAGAM UPS"></option>
-    <option value="NUAGUDA UPS"></option>
-    <option value="Odisha Adarsha Vidyalaya , Kotpad"></option>
-    <option value="PADARGUDA PS"></option>
-    <option value="PALAKAGUDA PROJ PS"></option>
-    <option value="PANCHAYAT HIGH SCHOOL, BHANSULI"></option>
-    <option value="PHUPUGAM UPS"></option>
-    <option value="POCHIA PS"></option>
-    <option value="S.B.NUAGAM HS"></option>
-    <option value="S.KUHUDI PROJ UPS"></option>
-    <option value="SADARANGA UPS"></option>
-    <option value="SANDHAGAM PS"></option>
-    <option value="SANKARDA PS"></option>
-    <option value="SARGIGUDA UPS"></option>
-    <option value="SARISAPADAR PROJ UPS"></option>
-    <option value="SARSADUGUDA PS"></option>
-    <option value="SEMLA PS"></option>
-    <option value="SIDHARTHA HIGH SCHOOL, SADARANGA"></option>
-    <option value="SITILIGUDA PS"></option>
-    <option value="SIUNAGUDA PROJ PS"></option>
-    <option value="SIUNAGUDA PS"></option>
-    <option value="SORIGAON UPS"></option>
-    <option value="SURLI UPS"></option>
-    <option value="SUTIPADAR PS"></option>
-    <option value="T.D.HANDI PROJ UPS"></option>
-    <option value="TELUGU STREET PS"></option>
-    <option value="UMURIPANDI-1 UPS"></option>
-    <option value="UMURIPANDI-2 PS"></option>
-    <option value="UPPER KOLAB PPS"></option>
-  </datalist>
-  <datalist id="gpWardList">
-    <option value="WARD NO-1"></option>
-    <option value="WARD NO-2"></option>
-    <option value="WARD NO-3"></option>
-    <option value="WARD NO-4"></option>
-    <option value="WARD NO-5"></option>
-    <option value="WARD NO-6"></option>
-    <option value="WARD NO-7"></option>
-    <option value="WARD NO-8"></option>
-    <option value="WARD NO-9"></option>
-    <option value="WARD NO-10"></option>
-    <option value="WARD NO-11"></option>
-    <option value="WARD NO-12"></option>
-    <option value="WARD NO-13"></option>
-    <option value="ASANA"></option>
-    <option value="BANSULI"></option>
-    <option value="BATASONA"></option>
-    <option value="BOBEYA"></option>
-    <option value="CHANDILI"></option>
-    <option value="CHITRA"></option>
-    <option value="DHAMANAHANDI"></option>
-    <option value="GIRLA"></option>
-    <option value="GUMUDA"></option>
-    <option value="KUHUDIGAON"></option>
-    <option value="KUSUMI"></option>
-    <option value="MURTAHANDI"></option>
-    <option value="NUAGAON"></option>
-    <option value="SADARANGA"></option>
-    <option value="SANKARDA"></option>
-    <option value="SARISAPADAR"></option>
-    <option value="SURLI"></option>
-    <option value="SUTIPADAR"></option>
-    <option value="TRIGAON"></option>
-    <option value="Kotpad 12 no ward"></option>
-    <option value="Kuhudigaon"></option>
-    <option value="Chandili"></option>
-  </datalist>
-
   <section id="studentLoginView">
     <div class="login-card">
       <div class="login-icon">🎓</div>
       <h2>Student Data &amp; Document Update</h2>
-      <p>Enter your <strong>12-digit Aadhaar Number</strong> to view your application, correct any wrong detail, and capture/upload your certificates.</p>
+      <p>Enter your <strong>12-digit Aadhaar Number</strong> to view your application, fix any wrong dropdown/detail, and capture/upload your certificates.</p>
 
       <div id="loginError" class="login-err"></div>
 
@@ -456,6 +324,7 @@
         <label for="inputAadhaar">Student's 12-Digit Aadhaar Number:</label>
         <input
           type="tel"
+          inputmode="numeric"
           id="inputAadhaar"
           class="aadhaar-input"
           maxlength="14"
@@ -494,7 +363,7 @@
         <h2 id="stuHeaderName">Student Name</h2>
         <p id="stuHeaderDetails">School • Class • UDID</p>
       </div>
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;width:auto;">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
         <div>
           <div style="font-size:12px;font-weight:700;color:#475569;" id="stuProgressLabel">Completed: 0%</div>
           <div class="progress-wrap"><div class="progress-bar" id="stuProgressBar"></div></div>
@@ -504,7 +373,7 @@
     </div>
 
     <div class="notice-card">
-      📱 <strong>Mobile Camera Supported:</strong> Tap <strong>📷 Camera</strong> on Divyang Certificate, Bonafide/Marksheet, or Bank Passbook to take a clear photo (or tap <strong>➕ Page</strong> for a 2nd page). It automatically converts into a crisp PDF!
+      📱 <strong>Mobile Tips:</strong> Choose your exact <strong>Block/NAC (`Kotpad` or `Kotpad Nac`)</strong>, <strong>GP/Ward</strong>, and <strong>School Name</strong> from the dropdown menus. Tap <strong>📷 Camera</strong> on certificates to auto-convert into PDF!
     </div>
 
     <div id="stuFormContainer"></div>
@@ -512,7 +381,7 @@
     <div class="bottom-save-bar">
       <div>
         <div style="font-size:15px;font-weight:800;color:#15803d;">Finished Checking Your Details?</div>
-        <div style="font-size:12px;color:#475569;">Tap below to submit everything safely.</div>
+        <div style="font-size:12px;color:#475569;">Tap below to save everything safely.</div>
       </div>
       <button class="btn btn-success btn-lg" onclick="saveCurrentStudent('stu', true)">
         💾 Save &amp; Submit My Details
@@ -550,10 +419,20 @@
     const RTDB_ROOT = "cwsn_scholarship_2026";
     let students = JSON.parse(JSON.stringify(INITIAL_STUDENTS));
     let filesStore = {};
-    let sourcePagesMem = {}; // Keeps resized JPEG pages in session memory so user can click "Add Page" from camera!
+    let sourcePagesMem = {};
     let currentSlNo = 1;
 
-    // Cloud API references populated dynamically (so page NEVER breaks offline!)
+    // Warn cleanly if opened inside WhatsApp / MIUI / Gmail built-in WebView
+    (function checkMobileWebView() {
+      try {
+        const ua = navigator.userAgent || "";
+        if (/; wv\)|WhatsApp|FBAN|FBAV|Instagram/i.test(ua)) {
+          const el = document.getElementById("webviewWarn");
+          if (el) el.style.display = "block";
+        }
+      } catch (e) {}
+    })();
+
     let cloudApi = {
       ready: false,
       saveStudent: async () => false,
@@ -588,8 +467,8 @@
         col: "Profile_Photo",
         suffix: "photo.jpg",
         title: "1. Student Photo (.jpg)",
-        sub: "Capture or pick photo (auto < 80 KB JPEG)",
-        accept: "image/*",
+        sub: "Tap Camera or Gallery (auto < 80 KB JPEG)",
+        accept: "image/*,.jpg,.jpeg,.png",
         camAccept: "image/*",
         multiple: false,
         required: true,
@@ -600,8 +479,8 @@
         col: "Divyang_Certificate_PDF",
         suffix: "disability.pdf",
         title: "2. Divyang / UDID Cert (PDF)",
-        sub: "Snap photo or pick PDF/JPG → saved as .pdf",
-        accept: ".pdf,application/pdf,image/*",
+        sub: "Camera photo or PDF/JPG → auto .pdf",
+        accept: "application/pdf,image/*,.pdf,.jpg,.jpeg,.png",
         camAccept: "image/*",
         multiple: true,
         required: true
@@ -611,8 +490,8 @@
         col: "Last_Exam_Marksheet_PDF",
         suffix: "marksheet.pdf",
         title: "3. Bonafide / Marksheet (PDF)",
-        sub: "Snap photo or pick PDF/JPG → saved as .pdf",
-        accept: ".pdf,application/pdf,image/*",
+        sub: "Camera photo or PDF/JPG → auto .pdf",
+        accept: "application/pdf,image/*,.pdf,.jpg,.jpeg,.png",
         camAccept: "image/*",
         multiple: true,
         required: true
@@ -622,8 +501,8 @@
         col: "Bank_Passbook_PDF",
         suffix: "passbook.pdf",
         title: "4. Bank Passbook Front (PDF)",
-        sub: "Snap photo or pick PDF/JPG → saved as .pdf",
-        accept: ".pdf,application/pdf,image/*",
+        sub: "Camera photo or PDF/JPG → auto .pdf",
+        accept: "application/pdf,image/*,.pdf,.jpg,.jpeg,.png",
         camAccept: "image/*",
         multiple: true,
         required: true
@@ -633,8 +512,8 @@
         col: "Other_Bonafide_PDF",
         suffix: "bonafide.pdf",
         title: "5. Extra Bonafide / Other Doc (PDF)",
-        sub: "Optional cert: Camera/JPG/PDF → saved as .pdf",
-        accept: ".pdf,application/pdf,image/*",
+        sub: "Optional cert: Camera/JPG/PDF → auto .pdf",
+        accept: "application/pdf,image/*,.pdf,.jpg,.jpeg,.png",
         camAccept: "image/*",
         multiple: true,
         required: false
@@ -669,28 +548,32 @@
       ["Sunabeda Mpl","Sunabeda Mpl (Municipality)"]
     ];
 
+    const KOTPAD_RURAL_GPS = ["ASANA", "BANSULI", "BATASONA", "BHANSULI", "BOBEYA", "CHANDILI", "CHITRA", "DHAMANAHANDI", "GIRLA", "GUMUDA", "KUHUDIGAON", "KUSUMI", "MURTAHANDI", "NUAGAON", "SADARANGA", "SANKARDA", "SARISAPADAR", "SURLI", "SUTIPADAR", "TRIGAON"];
+    const KOTPAD_NAC_WARDS = ["WARD NO-1", "WARD NO-2", "WARD NO-3", "WARD NO-4", "WARD NO-5", "WARD NO-6", "WARD NO-7", "WARD NO-8", "WARD NO-9", "WARD NO-10", "WARD NO-11", "WARD NO-12", "WARD NO-13"];
+    const ALL_PORTAL_SCHOOLS = ["A. GHOTARLA UPS", "ALUPADAR PS", "AMADAMUNDA PROJ UPS", "AMALABHATA PS", "AMBAGAMA PROJ UPS", "ANKULA UPS", "B.DHARGUDI PS", "B.GHATARLA PROJ UPS", "BADA ANDIRAMUNDA PROJ UPS", "BAGHACHUAN PROJ UPS", "BAKTIGUDA PROJ PS", "BANDHAGUDA PROJ UPS", "BANUAGUDA PROJ PS", "BASTAMBA UPS", "BASULI PS", "BATAKUHUDI UPS", "BEDHAGUDA PROJ PS", "BELGAM PS", "BENTAGUDA PS", "BHANSULI UPS", "BHURSI PROJ UPS", "BIBEKANANDA HIGH SCHOOL, PHUPUGAM", "BIJRAPALLI PROJ UPS", "BIRAHANDI PS", "BOBEYA PROJ UPS", "BONDAGUDA UPS", "BONIA PROJ UPS", "BORANDI PROJ UPS", "BOTASANA SS", "BOTASONA PROJ PS", "CHANDILI HIGH SCHOOL, CHANDILI", "CHANDILI UPS", "CHHATARLA UGHS", "CHICHILIPUT(BHAJIGUDA) PS", "CHILIGUDA PS", "CHITAGAM SS", "CHITRA SS", "CHITRAGUDA PROJ UPS", "CHORAMULA PROJ UPS", "COLONY NO -6 PROJ PS", "COLONY NO-4 PROJ PS", "COLONY NO-7 UPS", "DANGARI UPS", "DEORLI PS", "DONGRIGUDA UPS", "EKAMBA PS", "GIRLA HS", "GOVT. GIRLS HIGH SCHOOL, KOTPAD", "GOVT. HIGH SCHOOL, DHAMANAHANDI", "GOVT. HIGH SCHOOL, KOTPAD", "GOVT. NODAL HIGH SCHOOL, KUSUMI", "GOVT. SSD HIGHER SECONDARY SCHOOL, KOTPAD", "GOVT. U.G. HIGH SCHOOL, ASANA", "GOVT. U.G. HIGH SCHOOL, GHUMAR", "GOVT. U.G. HIGH SCHOOL, GUMUDA", "GOVT. U.G. HIGH SCHOOL, KURMAKOT", "GOVT. U.G. HIGH SCHOOL, MIRIGUDA", "GOVT. U.G. HIGH SCHOOL, MURTAHANDI", "Government (SSD) Higher Secondary School, Kotpad", "Government Vocational Higher Secondary School, Kotpad", "Govt. ITI Kotpad, Koraput", "HARDOLI PS", "JAMAL UPS", "JELC HIGH SCHOOL, KOTPAD", "JELC UPS, KOTPAD", "KALINJI STREET UPS", "KANDAGAM PS", "KANGIAGUDA PS", "KENDUGUDA UPS", "KHADAGPUR UPS", "KHAPURIGUDA PS", "KUSUMI PS", "Kotpad (Degree) College, Kotpad", "Kotpad Higher Secondary School, Kotpad", "LALMUNDA UPS", "LATHIAGUDA PS", "M.TARAGAM PS", "MAKAPUT UPS", "MALCHAMAL PS", "MANGALI STREET PS", "MOHANTIPUT UPS", "MUNDAGUDA UPS", "MUNDIPADAR UPS", "NAIKGUDA PS", "NANDIGAM UPS", "NARAHANDI UPS", "NEHERUPALLI UPS", "NUAGADA PS", "NUAGAM UPS", "NUAGUDA UPS", "Odisha Adarsha Vidyalaya , Kotpad", "PADARGUDA PS", "PALAKAGUDA PROJ PS", "PANCHAYAT HIGH SCHOOL, BHANSULI", "PHUPUGAM UPS", "POCHIA PS", "S.B.NUAGAM HS", "S.KUHUDI PROJ UPS", "SADARANGA UPS", "SANDHAGAM PS", "SANKARDA PS", "SARGIGUDA UPS", "SARISAPADAR PROJ UPS", "SARSADUGUDA PS", "SEMLA PS", "SIDHARTHA HIGH SCHOOL, SADARANGA", "SITILIGUDA PS", "SIUNAGUDA PROJ PS", "SIUNAGUDA PS", "SORIGAON UPS", "SURLI UPS", "SUTIPADAR PS", "T.D.HANDI PROJ UPS", "TELUGU STREET PS", "UMURIPANDI-1 UPS", "UMURIPANDI-2 PS", "UPPER KOLAB PPS"];
+
     const STEP2_FIELDS = [
       { key: "Password", label: "Scholarship Portal Password", type: "text", req: true, placeholder: "e.g. Akash@2016", opHelper: "autoPwd" },
-      { key: "Mobile_No", label: "Mobile Number (10 Digits)", type: "tel", req: true, maxlength: 10, placeholder: "10-digit number", onInput: "syncAltMobile" },
-      { key: "Alternative_Mobile_No", label: "Alternative Mobile No.", type: "tel", maxlength: 10, placeholder: "Alternative number" },
+      { key: "Mobile_No", label: "Mobile Number (10 Digits)", type: "tel", inputmode: "numeric", req: true, maxlength: 10, placeholder: "10-digit number", onInput: "syncAltMobile" },
+      { key: "Alternative_Mobile_No", label: "Alternative Mobile No.", type: "tel", inputmode: "numeric", maxlength: 10, placeholder: "Alternative number" },
       { key: "Email_ID", label: "e-Mail ID", type: "email", req: true, placeholder: "example@gmail.com" },
       { key: "Address_District", label: "Address District", type: "select", req: true, options: ODISHA_DISTRICTS },
       { key: "Address_Block_ULB", label: "Address Block / NAC (ULB)", type: "select", req: true, options: KORAPUT_BLOCKS_ULBS, onChange: "onAddrBlockChange" },
-      { key: "Address_GP_Ward", label: "GP / Ward (Pick GP or Ward 1-13)", type: "text", req: true, list: "gpWardList", placeholder: "e.g. CHANDILI or WARD NO-12", onInput: "syncAddress", opHelper: "copyAddr" },
-      { key: "Address_Village", label: "Village / Town Name", type: "text", req: true, placeholder: "Village or Ward/Kotpad" },
+      { key: "Address_GP_Ward", label: "GP / Ward (Choose Exact Portal GP or Ward)", type: "gpSelect", req: true, onChange: "syncAddress", opHelper: "copyAddr" },
+      { key: "Address_Village", label: "Village / Town Name", type: "text", req: true, placeholder: "Village name or Kotpad" },
       { key: "Address", label: "Full Address (Letters/Numbers/Hyphen, no spaces)", type: "text", req: true, placeholder: "e.g. SUTIPADAR or Kotpad-Ward-12" },
-      { key: "PIN_Code", label: "PIN Code", type: "tel", req: true, maxlength: 6, placeholder: "764058" },
+      { key: "PIN_Code", label: "PIN Code", type: "tel", inputmode: "numeric", req: true, maxlength: 6, placeholder: "764058" },
       { key: "Admission_Reg_No", label: "Admission / Reg No. (Current Year)", type: "text", req: true, placeholder: "e.g. 23 or 1537" },
       { key: "Admission_Date", label: "Admission Date", type: "text", placeholder: "02-04-2026" },
       { key: "Last_Exam_Passing_Year", label: "Last Exam Passing Year", type: "select", req: true, options: ["2026","2025","2024","2023","2022","2021","2020"] },
-      { key: "Last_Exam_Total_Marks", label: "Last Exam Total Marks", type: "number", req: true, placeholder: "e.g. 100 or 450" },
-      { key: "Last_Exam_Secured_Marks", label: "Last Exam Secured Marks", type: "number", req: true, placeholder: "Marks obtained" }
+      { key: "Last_Exam_Total_Marks", label: "Last Exam Total Marks", type: "number", inputmode: "numeric", req: true, placeholder: "e.g. 100 or 450" },
+      { key: "Last_Exam_Secured_Marks", label: "Last Exam Secured Marks", type: "number", inputmode: "numeric", req: true, placeholder: "Marks obtained" }
     ];
 
     const STEP3_FIELDS = [
       { key: "Student_Name", label: "Student Full Name", type: "text", req: true },
       { key: "Gender", label: "Gender", type: "select", options: ["Male","Female","Transgender"] },
-      { key: "Unique_Or_Aadhaar_No", label: "12-Digit Aadhaar Number", type: "tel", req: true, maxlength: 12 },
+      { key: "Unique_Or_Aadhaar_No", label: "12-Digit Aadhaar Number", type: "tel", inputmode: "numeric", req: true, maxlength: 12 },
       { key: "UDID_No", label: "UDID Card Number", type: "text", req: true },
       { key: "Father_Name", label: "Father's Name", type: "text" },
       { key: "Mother_Name", label: "Mother's Name", type: "text" },
@@ -702,19 +585,19 @@
       { key: "Student_Level", label: "Student Level", type: "select", options: [["1","Junior Level (1 to 10th)"],["2","Senior Level (+2 above)"]] },
       { key: "Institute_District", label: "School District", type: "select", options: ODISHA_DISTRICTS },
       { key: "Institute_Block_ULB", label: "School Block / NAC (ULB)", type: "select", options: KORAPUT_BLOCKS_ULBS },
-      { key: "Institute_Name", label: "School Name (Pick Official Portal Name)", type: "text", req: true, span2: true, list: "portalSchoolsList" },
+      { key: "Institute_Name", label: "School Name (Select Official Portal Name)", type: "schoolSelect", req: true, span2: true },
       { key: "Course_Class", label: "Current Class", type: "select", onChange: "updatePrevClass", options: [
         ["I","I (Class 1)"],["II","II (Class 2)"],["III","III (Class 3)"],["IV","IV (Class 4)"],
         ["V","V (Class 5)"],["VI","VI (Class 6)"],["VII","VII (Class 7)"],["VIII","VIII (Class 8)"],
         ["IX","IX (Class 9)"],["X","X (Class 10)"],["XI","XI (+2 1st Year)"],["XII","XII (+2 2nd Year)"]
       ]},
       { key: "Last_Exam_Class", label: "Last Exam Passed Class", type: "select", options: [
-        ["I","I (Class 1)"],["II","II (Class 2)"],["III","III (Class 3)"],["IV","IV (Class 4)"],
+        ["Pre-Primary","Pre-Primary"],["I","I (Class 1)"],["II","II (Class 2)"],["III","III (Class 3)"],["IV","IV (Class 4)"],
         ["V","V (Class 5)"],["VI","VI (Class 6)"],["VII","VII (Class 7)"],["VIII","VIII (Class 8)"],
         ["IX","IX (Class 9)"],["X","X (Class 10)"],["XI","XI (+2 1st Year)"],["XII","XII (+2 2nd Year)"]
       ]},
       { key: "Bank_IFSC_Code", label: "Bank IFSC Code", type: "text", req: true },
-      { key: "Bank_Account_No", label: "Bank Account Number", type: "text", req: true },
+      { key: "Bank_Account_No", label: "Bank Account Number", type: "text", inputmode: "numeric", req: true },
       { key: "Account_Holder_Name", label: "Account Holder Name (Max 40 letters/spaces)", type: "text", req: true, maxlength: 40 },
       { key: "Aadhaar_Seeded", label: "Aadhaar Seeded Account", type: "select", options: ["Yes","No"] }
     ];
@@ -759,6 +642,18 @@
       }
     }
 
+    function normalizeGpValue(val, blockVal) {
+      const raw = String(val || "").trim();
+      if (!raw) return "";
+      if (blockVal === "Kotpad Nac" || /ward/i.test(raw)) {
+        const m = raw.match(/(?:ward(?:\s*no\.?)?\s*[-:]?\s*|\b)(\d{1,2})\b/i);
+        if (m) return `WARD NO-${parseInt(m[1], 10)}`;
+      }
+      const upper = raw.toUpperCase();
+      const ruralMatch = KOTPAD_RURAL_GPS.find(g => g.toUpperCase() === upper);
+      return ruralMatch || raw;
+    }
+
     function getStudentStatus(stu) {
       if (String(stu.Automation_Status || "").toUpperCase() === "COMPLETED") return "DONE";
       const hasReadyFields = REQUIRED_FOR_READY.every(k => String(stu[k] || "").trim() !== "");
@@ -770,16 +665,85 @@
 
     function showToast(msg, bg = "#0f172a") {
       const t = document.getElementById("toast");
+      if (!t) return;
       t.textContent = msg;
       t.style.background = bg;
       t.style.display = "block";
       clearTimeout(window.__toastTimer);
-      window.__toastTimer = setTimeout(() => { t.style.display = "none"; }, 3800);
+      window.__toastTimer = setTimeout(() => { t.style.display = "none"; }, 3600);
     }
 
     // =========================================================================
-    // SHARED FORM RENDERER (CAMERA + FILE PICKER + ADD PAGE + ALL FIELDS)
+    // NATIVE MOBILE-FIRST DROPDOWNS & FORM RENDERER (Zero <datalist>!)
     // =========================================================================
+    function buildGpOptionsHtml(blockVal, currentVal) {
+      const list = (blockVal === "Kotpad Nac")
+        ? KOTPAD_NAC_WARDS
+        : [...KOTPAD_RURAL_GPS, ...KOTPAD_NAC_WARDS];
+      const normVal = normalizeGpValue(currentVal, blockVal);
+      let opts = ['<option value="">-- Select GP / Ward --</option>'];
+      let matched = false;
+      for (const item of list) {
+        const isSel = (item.toLowerCase() === normVal.toLowerCase() || item.toLowerCase() === String(currentVal || "").trim().toLowerCase());
+        if (isSel) matched = true;
+        opts.push(`<option value="${escHtml(item)}" ${isSel ? "selected" : ""}>${escHtml(item)}</option>`);
+      }
+      if (normVal && !matched) {
+        opts.push(`<option value="${escHtml(currentVal)}" selected>${escHtml(currentVal)}</option>`);
+      }
+      opts.push('<option value="__OTHER__">✏️ Other (Type Manually)</option>');
+      return opts.join("");
+    }
+
+    function buildSchoolOptionsHtml(currentVal, filterTxt = "") {
+      const cur = String(currentVal || "").trim();
+      const q = filterTxt.trim().toLowerCase();
+      const pool = new Set(ALL_PORTAL_SCHOOLS);
+      for (const s of students) {
+        if (s.Institute_Name) pool.add(String(s.Institute_Name).trim());
+      }
+      if (cur) pool.add(cur);
+      const sorted = Array.from(pool).filter(Boolean).sort();
+      const filtered = q ? sorted.filter(n => n.toLowerCase().includes(q) || n === cur) : sorted;
+
+      let opts = ['<option value="">-- Select Official Portal School --</option>'];
+      for (const name of filtered) {
+        const isSel = name.toLowerCase() === cur.toLowerCase();
+        opts.push(`<option value="${escHtml(name)}" ${isSel ? "selected" : ""}>${escHtml(name)}</option>`);
+      }
+      opts.push('<option value="__OTHER__">✏️ Other School (Type Manually)</option>');
+      return opts.join("");
+    }
+
+    window.filterSchoolDropdown = function(prefix, filterInput) {
+      const sel = document.getElementById(`${prefix}_Institute_Name`);
+      if (!sel) return;
+      const curVal = sel.value === "__OTHER__" ? "" : sel.value;
+      sel.innerHTML = buildSchoolOptionsHtml(curVal, filterInput.value || "");
+    };
+
+    window.onCustomDropdownChange = function(prefix, key, hook) {
+      const sel = document.getElementById(`${prefix}_${key}`);
+      const customEl = document.getElementById(`${prefix}_${key}_custom`);
+      if (!sel) return;
+      if (sel.value === "__OTHER__" && customEl) {
+        customEl.style.display = "block";
+        customEl.focus();
+        return;
+      } else if (customEl) {
+        customEl.style.display = "none";
+      }
+      onFieldEdit(prefix, key, hook);
+    };
+
+    window.onCustomTextInput = function(prefix, key, hook) {
+      const stu = students.find(s => Number(s.SL_No) === Number(currentSlNo));
+      const customEl = document.getElementById(`${prefix}_${key}_custom`);
+      if (!stu || !customEl) return;
+      stu[key] = customEl.value.trim();
+      if (typeof onAfterFieldChange === "function") onAfterFieldChange(stu);
+    };
+
     function renderFieldsHtml(prefix, fields, stu) {
       return fields.map(f => {
         const val = stu[f.key] !== undefined && stu[f.key] !== null ? String(stu[f.key]) : "";
@@ -787,24 +751,47 @@
         const cls = "form-control" + (isEmptyReq ? " empty-req" : "");
         let helperBtn = "";
         if (prefix === "op" && f.opHelper === "autoPwd") {
-          helperBtn = `<button type="button" class="btn btn-ghost btn-sm" style="padding:2px 7px;min-height:24px;font-size:10.5px;" onclick="autoGenPassword()">⚡ Auto</button>`;
+          helperBtn = `<button type="button" class="btn btn-ghost btn-sm" style="padding:2px 8px;min-height:26px;font-size:11px;" onclick="autoGenPassword()">⚡ Auto</button>`;
         } else if (prefix === "op" && f.opHelper === "copyAddr") {
-          helperBtn = `<button type="button" class="btn btn-ghost btn-sm" style="padding:2px 7px;min-height:24px;font-size:10.5px;" onclick="copySchoolAddress()">📋 Copy School GP</button>`;
+          helperBtn = `<button type="button" class="btn btn-ghost btn-sm" style="padding:2px 8px;min-height:26px;font-size:11px;" onclick="copySchoolAddress()">📋 Copy School GP</button>`;
         }
 
         let ctrlHtml = "";
         if (f.type === "select") {
-          const optsHtml = f.options.map(opt => {
+          const allOpts = [...f.options];
+          const exists = allOpts.some(opt => (Array.isArray(opt) ? opt[0] : opt).toLowerCase() === val.toLowerCase());
+          if (val && !exists) allOpts.unshift([val, val]);
+          const optsHtml = allOpts.map(opt => {
             const [ov, ol] = Array.isArray(opt) ? opt : [opt, opt];
             const selected = (val.toLowerCase() === ov.toLowerCase()) ? "selected" : "";
             return `<option value="${escHtml(ov)}" ${selected}>${escHtml(ol)}</option>`;
           }).join("");
           ctrlHtml = `<select id="${prefix}_${f.key}" class="${cls}" onchange="onFieldEdit('${prefix}','${f.key}','${f.onChange || ''}')">${optsHtml}</select>`;
+        } else if (f.type === "gpSelect") {
+          const blkVal = String(stu.Address_Block_ULB || "Kotpad").trim();
+          ctrlHtml = `
+            <select id="${prefix}_${f.key}" class="${cls}" onchange="onCustomDropdownChange('${prefix}','${f.key}','${f.onChange || ''}')">
+              ${buildGpOptionsHtml(blkVal, val)}
+            </select>
+            <input type="text" id="${prefix}_${f.key}_custom" class="form-control" style="display:none;margin-top:6px;"
+              placeholder="Type GP or Ward Name" oninput="onCustomTextInput('${prefix}','${f.key}','${f.onChange || ''}')" />
+          `;
+        } else if (f.type === "schoolSelect") {
+          ctrlHtml = `
+            <div class="school-picker-wrap">
+              <input type="text" class="school-filter-mini" placeholder="🔍 Type 3 letters to filter school list..." oninput="filterSchoolDropdown('${prefix}', this)" />
+              <select id="${prefix}_${f.key}" class="${cls}" onchange="onCustomDropdownChange('${prefix}','${f.key}','')">
+                ${buildSchoolOptionsHtml(val)}
+              </select>
+              <input type="text" id="${prefix}_${f.key}_custom" class="form-control" style="display:none;"
+                placeholder="Type exact School Name" oninput="onCustomTextInput('${prefix}','${f.key}','')" />
+            </div>
+          `;
         } else {
           const maxAttr = f.maxlength ? `maxlength="${f.maxlength}"` : "";
-          const listAttr = f.list ? `list="${f.list}"` : "";
+          const imAttr = f.inputmode ? `inputmode="${f.inputmode}"` : "";
           const phAttr = f.placeholder ? `placeholder="${escHtml(f.placeholder)}"` : "";
-          ctrlHtml = `<input type="${f.type}" id="${prefix}_${f.key}" class="${cls}" value="${escHtml(val)}" ${maxAttr} ${listAttr} ${phAttr} oninput="onFieldEdit('${prefix}','${f.key}','${f.onInput || ''}')" />`;
+          ctrlHtml = `<input type="${f.type}" id="${prefix}_${f.key}" class="${cls}" value="${escHtml(val)}" ${maxAttr} ${imAttr} ${phAttr} oninput="onFieldEdit('${prefix}','${f.key}','${f.onInput || ''}')" />`;
         }
 
         return `
@@ -839,8 +826,7 @@
         const addPageBtn = !slot.isImageOnly ? `
           <button type="button" class="btn btn-purple btn-sm" id="${prefix}_addpg_${slot.key}"
             style="display:${uploaded ? 'inline-flex' : 'none'}"
-            title="Snap Page 2 / Back Side with Camera and merge into same PDF"
-            onclick="document.getElementById('${prefix}_camadd_${slot.key}').click()">➕ Page</button>
+            onclick="document.getElementById('${prefix}_camadd_${slot.key}').click()">➕ Add Page</button>
           <input type="file" id="${prefix}_camadd_${slot.key}" accept="${slot.camAccept}" capture="environment" style="display:none"
             onchange="handleFileSelect('${prefix}', '${slot.key}', this, true)" />
         ` : "";
@@ -854,7 +840,6 @@
             ${imgHtml}
             <div class="file-status" id="${prefix}_status_${slot.key}" style="color:${statusColor}">${statusHtml}</div>
 
-            <!-- Hidden inputs: Dedicated Mobile Camera + Gallery/PDF Picker -->
             <input type="file" id="${prefix}_cam_${slot.key}" accept="${slot.camAccept}" capture="environment" style="display:none"
               onchange="handleFileSelect('${prefix}', '${slot.key}', this, false)" />
             <input type="file" id="${prefix}_input_${slot.key}" accept="${slot.accept}" ${multiAttr} style="display:none"
@@ -865,7 +850,7 @@
               <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('${prefix}_input_${slot.key}').click()">${slot.isImageOnly ? '🖼 Gallery' : '📎 PDF/JPG'}</button>
               ${addPageBtn}
               <button type="button" class="btn btn-success btn-sm" id="${prefix}_view_${slot.key}" style="display:${uploaded ? 'inline-flex' : 'none'}" onclick="viewUploadedFile('${slot.key}')">👁 View</button>
-              <button type="button" class="btn btn-ghost btn-sm" id="${prefix}_dl_${slot.key}" style="display:${uploaded ? 'inline-flex' : 'none'}" onclick="downloadUploadedFile('${slot.key}')">⬇</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="${prefix}_dl_${slot.key}" style="display:${uploaded ? 'inline-flex' : 'none'}" onclick="downloadUploadedFile('${slot.key}')">⬇ Save</button>
               <button type="button" class="btn btn-danger btn-sm" id="${prefix}_del_${slot.key}" style="display:${uploaded ? 'inline-flex' : 'none'}" onclick="clearUploadedFile('${prefix}', '${slot.key}')">✖</button>
             </div>
           </div>
@@ -890,7 +875,7 @@
 
         <div class="card card-highlight">
           <div class="card-title">
-            <span>✏️ Step 2: Application &amp; Missing Information</span>
+            <span>✏️ Step 2: Application &amp; Address Information</span>
             <span style="font-size:11.5px;color:#b91c1c;font-weight:700;">Red boxes need entry</span>
           </div>
           <div class="grid-3">${renderFieldsHtml(prefix, STEP2_FIELDS, stu)}</div>
@@ -898,7 +883,7 @@
 
         <div class="card">
           <div class="card-title">
-            <span>👤 Step 3: Profile, School &amp; Bank Details (Editable)</span>
+            <span>👤 Step 3: Profile, School &amp; Bank Details (Dropdowns Ready)</span>
           </div>
           <div class="grid-3">${renderFieldsHtml(prefix, STEP3_FIELDS, stu)}</div>
         </div>
@@ -908,7 +893,7 @@
     }
 
     // =========================================================================
-    // PURE-JS PHOTO COMPRESSOR (< 80 KB) & MULTI-IMAGE -> PDF 1.4 CONVERTER
+    // MEMORY-SAFE MOBILE IMAGE COMPRESSOR & MULTI-PAGE PDF 1.4 BUILDER
     // =========================================================================
     function readBlobAsDataUrl(blob) {
       return new Promise((resolve, reject) => {
@@ -942,76 +927,70 @@
       return new Blob([dataUrlToUint8Array(dataUrl)], { type: mime });
     }
 
-    function compressImageUnder80KB(file) {
+    function loadImageViaObjectUrl(fileOrBlob) {
       return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = e => {
-          const img = new Image();
-          img.onload = () => {
-            const canvas = document.createElement("canvas");
-            let w = img.width, h = img.height;
-            const maxDim = 650;
-            if (w > maxDim || h > maxDim) {
-              if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
-              else { w = Math.round((w * maxDim) / h); h = maxDim; }
-            }
-            canvas.width = w;
-            canvas.height = h;
-            const ctx = canvas.getContext("2d");
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(0, 0, w, h);
-            ctx.drawImage(img, 0, 0, w, h);
-
-            let dataUrl = canvas.toDataURL("image/jpeg", 0.78);
-            for (const q of [0.70, 0.60, 0.50, 0.40, 0.30]) {
-              const kb = Math.round((dataUrl.length * 3) / 4 / 1024);
-              if (kb <= 78) break;
-              dataUrl = canvas.toDataURL("image/jpeg", q);
-            }
-            resolve({ dataUrl, sizeKb: Math.max(1, Math.round((dataUrl.length * 3) / 4 / 1024)) });
-          };
-          img.onerror = () => reject(new Error("Invalid image file"));
-          img.src = e.target.result;
+        const objUrl = URL.createObjectURL(fileOrBlob);
+        const img = new Image();
+        img.onload = () => {
+          URL.revokeObjectURL(objUrl);
+          resolve(img);
         };
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
+        img.onerror = () => {
+          URL.revokeObjectURL(objUrl);
+          reject(new Error("Could not decode photo image"));
+        };
+        img.src = objUrl;
       });
     }
 
-    function imageBlobToJpegPage(fileOrBlob) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = e => {
-          const img = new Image();
-          img.onload = () => {
-            const canvas = document.createElement("canvas");
-            let w = img.width, h = img.height;
-            const maxDim = 1280;
-            if (w > maxDim || h > maxDim) {
-              if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
-              else { w = Math.round((w * maxDim) / h); h = maxDim; }
-            }
-            canvas.width = w;
-            canvas.height = h;
-            const ctx = canvas.getContext("2d");
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(0, 0, w, h);
-            ctx.drawImage(img, 0, 0, w, h);
+    async function compressImageUnder80KB(file) {
+      const img = await loadImageViaObjectUrl(file);
+      const canvas = document.createElement("canvas");
+      let w = img.width, h = img.height;
+      const maxDim = 560;
+      if (w > maxDim || h > maxDim) {
+        if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
+        else { w = Math.round((w * maxDim) / h); h = maxDim; }
+      }
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(img, 0, 0, w, h);
 
-            let dataUrl = canvas.toDataURL("image/jpeg", 0.80);
-            for (const q of [0.70, 0.58, 0.45]) {
-              const kb = Math.round((dataUrl.length * 3) / 4 / 1024);
-              if (kb <= 260) break;
-              dataUrl = canvas.toDataURL("image/jpeg", q);
-            }
-            resolve({ jpegBytes: dataUrlToUint8Array(dataUrl), width: w, height: h });
-          };
-          img.onerror = () => reject(new Error("Could not decode image"));
-          img.src = e.target.result;
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(fileOrBlob);
-      });
+      let dataUrl = canvas.toDataURL("image/jpeg", 0.78);
+      for (const q of [0.68, 0.56, 0.45, 0.35, 0.25]) {
+        const kb = Math.round((dataUrl.length * 3) / 4 / 1024);
+        if (kb <= 76) break;
+        dataUrl = canvas.toDataURL("image/jpeg", q);
+      }
+      return { dataUrl, sizeKb: Math.max(1, Math.round((dataUrl.length * 3) / 4 / 1024)) };
+    }
+
+    async function imageBlobToJpegPage(fileOrBlob) {
+      const img = await loadImageViaObjectUrl(fileOrBlob);
+      const canvas = document.createElement("canvas");
+      let w = img.width, h = img.height;
+      const maxDim = 1120;
+      if (w > maxDim || h > maxDim) {
+        if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
+        else { w = Math.round((w * maxDim) / h); h = maxDim; }
+      }
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(img, 0, 0, w, h);
+
+      let dataUrl = canvas.toDataURL("image/jpeg", 0.78);
+      for (const q of [0.65, 0.52, 0.40]) {
+        const kb = Math.round((dataUrl.length * 3) / 4 / 1024);
+        if (kb <= 210) break;
+        dataUrl = canvas.toDataURL("image/jpeg", q);
+      }
+      return { jpegBytes: dataUrlToUint8Array(dataUrl), width: w, height: h };
     }
 
     function jpegPagesToPdfResult(pages) {
@@ -1097,10 +1076,11 @@
     }
 
     // =========================================================================
-    // INDEXEDDB PERSISTENCE
+    // STORAGE (IndexedDB + localStorage fallback for strict mobile viewers)
     // =========================================================================
     function openLocalDB() {
       return new Promise((resolve, reject) => {
+        if (!window.indexedDB) return reject(new Error("no idb"));
         const req = indexedDB.open("BanishreeKotpad2026DB", 2);
         req.onupgradeneeded = e => {
           const idb = e.target.result;
@@ -1112,6 +1092,9 @@
     }
 
     async function saveToIndexedDB() {
+      try {
+        localStorage.setItem("banishree_2026_students", JSON.stringify(students));
+      } catch (e) {}
       try {
         const idb = await openLocalDB();
         const tx = idb.transaction("state", "readwrite");
@@ -1134,6 +1117,10 @@
 
     async function loadFromIndexedDB() {
       try {
+        const ls = localStorage.getItem("banishree_2026_students");
+        if (ls) mergeRemoteStudents(JSON.parse(ls));
+      } catch (e) {}
+      try {
         const idb = await openLocalDB();
         return new Promise(resolve => {
           const tx = idb.transaction("state", "readonly");
@@ -1151,7 +1138,7 @@
     }
 
     // =========================================================================
-    // FILE UPLOAD & VIEW / DOWNLOAD / CLEAR HANDLERS
+    // FILE UPLOAD & PREVIEW HANDLERS
     // =========================================================================
     window.handleFileSelect = async function(prefix, docKey, inputEl, appendPage = false) {
       const files = Array.from(inputEl.files || []);
@@ -1168,6 +1155,7 @@
       try {
         let result;
         if (docKey === "photo") {
+          showToast("📷 Compressing photo under 80 KB...", "#1e40af");
           result = await compressImageUnder80KB(files[0]);
         } else {
           const allImages = files.every(f => f.type.startsWith("image/") || /\.(jpg|jpeg|png|webp|bmp|heic)$/i.test(f.name));
@@ -1214,14 +1202,14 @@
         const extraTxt = filePayload.convertedFromJpg ? ` (PDF ${filePayload.pageCount}p)` : "";
         showToast(
           cloudOk
-            ? `✅ Saved ${stdFilename} (${result.sizeKb} KB)${extraTxt} to Firebase!`
-            : `💾 Saved ${stdFilename} (${result.sizeKb} KB)${extraTxt} on device!`,
+            ? `✅ Uploaded ${stdFilename} (${result.sizeKb} KB)${extraTxt} to Firebase!`
+            : `💾 Saved ${stdFilename} (${result.sizeKb} KB)${extraTxt} on phone/PC!`,
           cloudOk ? "#15803d" : "#d97706"
         );
       } catch (err) {
         alert("Upload failed: " + err.message);
       } finally {
-        inputEl.value = "";
+        try { inputEl.value = ""; } catch (e) {}
       }
     };
 
@@ -1292,9 +1280,9 @@
             const pUrl = "data:image/jpeg;base64," + uint8ArrayToBase64(pg.jpegBytes);
             return `<div style="margin-bottom:12px;"><div style="font-size:12px;font-weight:700;color:#475569;margin-bottom:4px;">PDF Page ${idx + 1} of ${memPages.length}</div><img src="${pUrl}" /></div>`;
           }).join("");
-          bodyEl.innerHTML = thumbs + `<div style="margin-top:8px;font-size:12px;color:#15803d;font-weight:700;">✅ Converted cleanly into ${memPages.length}-page PDF (${entry.sizeKb} KB)</div>`;
+          bodyEl.innerHTML = thumbs + `<div style="margin-top:8px;font-size:12px;color:#15803d;font-weight:700;">✅ Ready ${memPages.length}-page PDF (${entry.sizeKb} KB)</div>`;
         } else {
-          bodyEl.innerHTML = `<iframe src="${url}" title="${escHtml(entry.filename)}"></iframe>`;
+          bodyEl.innerHTML = `<iframe src="${url}" title="${escHtml(entry.filename)}"></iframe><div style="margin-top:10px;font-size:12px;color:#475569;">If blank on mobile, tap <strong>⬇ Download</strong> above to view PDF.</div>`;
         }
       }
       modal.style.display = "flex";
@@ -1312,9 +1300,7 @@
       if (!entry || !entry.dataUrl) return;
       const url = URL.createObjectURL(dataUrlToBlob(entry.dataUrl));
       const a = document.createElement("a");
-      a.href = url;
-      a.download = entry.filename;
-      a.click();
+      a.href = url; a.download = entry.filename; a.click();
       setTimeout(() => URL.revokeObjectURL(url), 5000);
     };
 
@@ -1338,7 +1324,8 @@
       if (!stu) return;
       const el = document.getElementById(`${prefix}_${key}`);
       if (!el) return;
-      stu[key] = el.value.trim();
+      const val = (el.value === "__OTHER__") ? "" : el.value.trim();
+      stu[key] = val;
 
       const def = [...STEP2_FIELDS, ...STEP3_FIELDS].find(f => f.key === key);
       if (def && def.req) {
@@ -1353,9 +1340,9 @@
           stu.Alternative_Mobile_No = stu[key];
         }
       } else if (hook === "onAddrBlockChange") {
-        const gpInput = document.getElementById(`${prefix}_Address_GP_Ward`);
-        if (gpInput) {
-          gpInput.placeholder = (stu[key] === "Kotpad Nac") ? "e.g. WARD NO-12" : "e.g. CHANDILI";
+        const gpSel = document.getElementById(`${prefix}_Address_GP_Ward`);
+        if (gpSel) {
+          gpSel.innerHTML = buildGpOptionsHtml(stu[key], stu.Address_GP_Ward || "");
         }
       } else if (hook === "syncAddress") {
         const gp = stu[key];
@@ -1366,8 +1353,16 @@
           bEl.value = "Kotpad Nac";
           stu.Address_Block_ULB = "Kotpad Nac";
         }
-        if (gp && vEl && !vEl.value) { vEl.value = gp; stu.Address_Village = gp; vEl.classList.remove("empty-req"); }
-        if (gp && aEl && !aEl.value) { aEl.value = gp.replace(/\s+/g, "-"); stu.Address = aEl.value; aEl.classList.remove("empty-req"); }
+        if (gp && vEl && !vEl.value) {
+          vEl.value = /ward/i.test(gp) ? "Kotpad" : gp;
+          stu.Address_Village = vEl.value;
+          vEl.classList.remove("empty-req");
+        }
+        if (gp && aEl && !aEl.value) {
+          aEl.value = gp.replace(/\s+/g, "-");
+          stu.Address = aEl.value;
+          aEl.classList.remove("empty-req");
+        }
       } else if (hook === "updatePrevClass") {
         const order = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII"];
         const idx = order.indexOf(stu[key]);
@@ -1391,7 +1386,11 @@
       if (!stu) return;
       for (const f of ALL_FORM_KEYS) {
         const el = document.getElementById(`${prefix}_${f}`);
-        if (el) stu[f] = el.value.trim();
+        const customEl = document.getElementById(`${prefix}_${f}_custom`);
+        if (el) {
+          if (el.value === "__OTHER__" && customEl) stu[f] = customEl.value.trim();
+          else if (el.value !== "__OTHER__") stu[f] = el.value.trim();
+        }
       }
       reconcileStudentFilenames(stu);
       stu.Last_Updated_At = new Date().toISOString().replace("T", " ").slice(0, 19);
@@ -1405,10 +1404,10 @@
       if (typeof onAfterSave === "function") onAfterSave(stu);
 
       if (cloudOk) {
-        updateFbBadge(true, "Firebase Connected & Synced");
+        updateFbBadge(true, "Firebase Synced");
         if (isManualClick) showToast(`✅ Saved ${stu.Student_Name} to Firebase Cloud!`, "#15803d");
       } else {
-        if (isManualClick) showToast(`💾 Saved ${stu.Student_Name} locally on device!`, "#d97706");
+        if (isManualClick) showToast(`💾 Saved ${stu.Student_Name} on device!`, "#d97706");
       }
     };
 
@@ -1419,7 +1418,6 @@
       if (lbl) lbl.textContent = text;
     }
 
-    // Dynamic non-blocking Firebase bootstrap
     async function initFirebaseLive(onStudentsSync, onFilesSync) {
       try {
         const [
@@ -1445,7 +1443,8 @@
           saveStudent: async (stuKey, stu) => {
             let ok = false;
             try { await set(ref(db, `${RTDB_ROOT}/students/${stuKey}`), stu); ok = true; } catch (e) {}
-            try { await setDoc(doc(fsDb, "cwsn_scholarship_2026", stuKey), stu); ok = true; } catch (e) {}
+            // Background Firestore sync (non-blocking if Firestore rules reject!)
+            setDoc(doc(fsDb, "cwsn_scholarship_2026", stuKey), stu).catch(() => {});
             return ok;
           },
           saveFile: async (stuKey, docKey, filePayload, stu) => {
@@ -1455,11 +1454,7 @@
               await set(ref(db, `${RTDB_ROOT}/students/${stuKey}`), stu);
               ok = true;
             } catch (e) {}
-            try {
-              await setDoc(doc(fsDb, "cwsn_scholarship_2026_files", `${stuKey}_${docKey}`), filePayload);
-              await setDoc(doc(fsDb, "cwsn_scholarship_2026", stuKey), stu);
-              ok = true;
-            } catch (e) {}
+            setDoc(doc(fsDb, "cwsn_scholarship_2026_files", `${stuKey}_${docKey}`), filePayload).catch(() => {});
             return ok;
           },
           clearFile: async (stuKey, docKey, stu) => {

@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <title>Banishree Scholarship 2026-27 — Student Update Portal (Kotpad)</title>
+  <title>Banishree Scholarship 2026-27 — Operator Master Portal (Kotpad)</title>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
 
     :root {
@@ -203,69 +205,82 @@
     }
 
 
-    #studentLoginView {
+    #operatorView {
       flex: 1;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px 14px;
-      background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%);
+      flex-direction: column;
+      overflow: hidden;
+      height: calc(100vh - 64px);
     }
-    .login-card {
-      background: #ffffff; max-width: 500px; width: 100%;
-      border-radius: 14px; padding: 28px 22px;
-      box-shadow: 0 12px 30px rgba(15,23,42,0.1);
-      border: 1px solid #cbd5e1; text-align: center;
+    .stats-bar {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 8px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; flex-wrap: wrap; font-size: 12px;
     }
-    .login-icon {
-      width: 64px; height: 64px; border-radius: 50%;
-      background: var(--primary-light); color: var(--primary);
-      display: inline-flex; align-items: center; justify-content: center;
-      font-size: 30px; margin-bottom: 14px;
+    .stats-pills { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+    .stat-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 999px; font-weight: 600;
+      background: #f1f5f9; white-space: nowrap;
     }
-    .login-card h2 { font-size: 21px; font-weight: 800; margin-bottom: 6px; }
-    .login-card p { font-size: 13.5px; color: var(--muted); margin-bottom: 20px; line-height: 1.45; }
-    .login-input-group { display: flex; flex-direction: column; gap: 8px; text-align: left; margin-bottom: 18px; }
-    .login-input-group label { font-size: 13px; font-weight: 700; color: #334155; }
-    .aadhaar-input {
-      width: 100%; padding: 14px 14px; font-size: 20px; font-weight: 700;
-      letter-spacing: 2px; text-align: center; border: 2px solid var(--border);
-      border-radius: 9px; outline: none; transition: all 0.15s;
-    }
-    .aadhaar-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.18); }
-    .login-alt-toggle { font-size: 12.5px; color: #2563eb; font-weight: 600; cursor: pointer; margin-top: 12px; text-decoration: underline; display: inline-block; }
-    .login-err { background: var(--danger-bg); color: var(--danger); padding: 10px 14px; border-radius: 7px; font-size: 13px; font-weight: 600; margin-bottom: 14px; display: none; }
+    .stat-pill.done { background: var(--success-bg); color: var(--success); }
+    .stat-pill.ready { background: var(--primary-light); color: var(--primary); }
+    .stat-pill.warn { background: var(--warn-bg); color: var(--warn); }
+    .stat-pill.pend { background: #f3e8ff; color: #6b21a8; }
+    .op-export-bar { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
 
-    #studentPortalView {
-      flex: 1; display: none; flex-direction: column;
-      max-width: 1080px; width: 100%; margin: 0 auto;
-      padding: 16px 14px 90px 14px;
+    .workspace-split { display: grid; grid-template-columns: 350px 1fr; flex: 1; overflow: hidden; }
+    .sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; overflow: hidden;
     }
-    .student-banner {
-      background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 16px 18px; margin-bottom: 14px;
-      display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    .sidebar-controls {
+      padding: 10px; border-bottom: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 7px; background: #f8fafc;
     }
-    .stu-profile-head h2 { font-size: 18px; font-weight: 800; }
-    .stu-profile-head p { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
-    .progress-wrap { background: #e2e8f0; border-radius: 999px; height: 11px; width: 190px; overflow: hidden; margin-top: 5px; }
-    .progress-bar { height: 100%; background: #16a34a; width: 0%; transition: width 0.25s ease; }
+    .filter-tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+    .filter-tab {
+      flex: 1; text-align: center; padding: 7px 4px; font-size: 11px; font-weight: 600;
+      border-radius: 6px; border: 1px solid var(--border); background: #fff; cursor: pointer; color: var(--muted);
+    }
+    .filter-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .student-list { flex: 1; overflow-y: auto; }
+    .student-item {
+      padding: 11px 14px; border-bottom: 1px solid #f1f5f9;
+      cursor: pointer; display: flex; flex-direction: column; gap: 3px;
+    }
+    .student-item:hover { background: #f8fafc; }
+    .student-item.active { background: #eff6ff; border-left: 4px solid var(--primary); }
+    .stu-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+    .stu-name { font-weight: 700; font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .stu-sl { background: #e2e8f0; color: #334155; font-size: 10.5px; font-weight: 700; padding: 2px 6px; border-radius: 4px; flex-shrink: 0; }
+    .stu-sub { font-size: 11.5px; color: var(--muted); display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+    .badge { display: inline-block; padding: 2px 7px; border-radius: 999px; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+    .badge-done { background: var(--success-bg); color: var(--success); }
+    .badge-ready { background: var(--primary-light); color: var(--primary); }
+    .badge-warn { background: var(--warn-bg); color: var(--warn); }
+    .badge-pend { background: #f1f5f9; color: #64748b; }
 
-    .notice-card {
-      background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 14px;
-      border-radius: 8px; margin-bottom: 14px; font-size: 13px; color: #1e40af; line-height: 1.5;
+    .op-editor-pane { flex: 1; overflow-y: auto; padding: 16px 20px 80px 20px; }
+    .op-sticky-header {
+      position: sticky; top: 0; z-index: 15;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+      margin-bottom: 16px; background: #fff; padding: 12px 15px;
+      border-radius: 10px; border: 1px solid #cbd5e1;
+      box-shadow: 0 3px 10px rgba(15,23,42,0.06);
     }
-    .bottom-save-bar {
-      position: sticky; bottom: 8px; background: #ffffff;
-      padding: 12px 16px; border-radius: var(--radius); border: 2px solid #22c55e;
-      box-shadow: 0 -4px 18px rgba(0,0,0,0.12);
-      display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-      margin-top: 18px; z-index: 15;
-    }
-    @media (max-width: 640px) {
-      .bottom-save-bar button { width: 100%; }
-      .student-banner button { width: 100%; }
+    .mobile-list-toggle { display: none; width: 100%; }
+
+    @media (max-width: 900px) {
+      #operatorView { height: auto; overflow: visible; }
+      .workspace-split { grid-template-columns: 1fr; overflow: visible; }
+      .sidebar { max-height: 360px; border-right: none; border-bottom: 2px solid var(--border); }
+      .op-editor-pane { padding: 12px 12px 80px 12px; overflow: visible; }
+      .op-sticky-header { position: static; }
+      .mobile-list-toggle { display: inline-flex; }
     }
 
   </style>
@@ -273,10 +288,10 @@
 <body>
   <header class="topbar">
     <div class="brand">
-      <span class="brand-badge">STUDENT PORTAL</span>
+      <span class="brand-badge">OPERATOR PORTAL</span>
       <div>
-        <h1>Banishree 2026-27 — Student Update</h1>
-        <p>Update Your Details • Snap Documents with Camera (Auto PDF)</p>
+        <h1>Banishree 2026-27 — Master Entry &amp; Export</h1>
+        <p>Add/Edit All Students • Mobile Camera→PDF • Download Excel + Renamed PDFs (.zip)</p>
       </div>
     </div>
     <div class="toolbar-actions">
@@ -284,6 +299,8 @@
         <span id="fbDot" class="dot"></span>
         <span id="fbStatusText">Connecting...</span>
       </div>
+      <button class="btn btn-amber" onclick="exportZipPackage()">📦 Download Excel + PDFs (.zip)</button>
+      <button class="btn btn-success" onclick="exportToExcelOnly()">📊 Excel Only</button>
     </div>
   </header>
 
@@ -444,79 +461,61 @@
     <option value="Chandili"></option>
   </datalist>
 
-  <section id="studentLoginView">
-    <div class="login-card">
-      <div class="login-icon">🎓</div>
-      <h2>Student Data &amp; Document Update</h2>
-      <p>Enter your <strong>12-digit Aadhaar Number</strong> to view your application, correct any wrong detail, and capture/upload your certificates.</p>
-
-      <div id="loginError" class="login-err"></div>
-
-      <div class="login-input-group">
-        <label for="inputAadhaar">Student's 12-Digit Aadhaar Number:</label>
-        <input
-          type="tel"
-          id="inputAadhaar"
-          class="aadhaar-input"
-          maxlength="14"
-          placeholder="XXXX XXXX XXXX"
-          oninput="formatAadhaarInput(this)"
-          onkeydown="if(event.key==='Enter') loginStudent();"
-          autofocus
-        />
+  <section id="operatorView">
+    <div class="stats-bar">
+      <div class="stats-pills">
+        <span class="stat-pill">Total: <strong id="statTotal">135</strong></span>
+        <span class="stat-pill done">✅ Done: <strong id="statDone">0</strong></span>
+        <span class="stat-pill ready">🚀 Ready: <strong id="statReady">0</strong></span>
+        <span class="stat-pill pend">⏳ Unfilled: <strong id="statPending">0</strong></span>
+        <span class="stat-pill warn">⚠️ Check: <strong id="statWarn">0</strong></span>
+        <span class="stat-pill">📎 Docs: <strong id="statFiles">0</strong></span>
       </div>
-
-      <button class="btn btn-primary btn-lg" style="width:100%;" onclick="loginStudent()">
-        Open My Application ➜
-      </button>
-
-      <div style="margin-top:14px;">
-        <span class="login-alt-toggle" onclick="toggleAltLogin()">
-          Aadhaar missing? Tap here to pick your School &amp; Name
-        </span>
-      </div>
-
-      <div id="altLoginBox" style="display:none;margin-top:16px;text-align:left;background:#f8fafc;padding:14px;border-radius:8px;border:1px solid #cbd5e1;">
-        <label style="font-size:12.5px;font-weight:700;">Select Your Name from School List:</label>
-        <select id="selectStudentAlt" class="form-control" style="margin-top:6px;">
-          <option value="">-- Choose Your Name --</option>
-        </select>
-        <button class="btn btn-success" style="margin-top:10px;width:100%;" onclick="loginStudentBySelect()">
-          Open My Form
-        </button>
+      <div class="op-export-bar">
+        <button class="btn btn-ghost btn-sm mobile-list-toggle" onclick="toggleMobileSidebar()">📋 Show/Hide Student List</button>
+        <button class="btn btn-ghost btn-sm" onclick="exportFullJsonBackup()">💾 Backup JSON</button>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('importJsonInput').click()">📂 Import JSON</button>
+        <input type="file" id="importJsonInput" accept=".json,application/json" style="display:none" onchange="importJsonBackup(this)" />
       </div>
     </div>
-  </section>
 
-  <section id="studentPortalView">
-    <div class="student-banner">
-      <div class="stu-profile-head">
-        <h2 id="stuHeaderName">Student Name</h2>
-        <p id="stuHeaderDetails">School • Class • UDID</p>
-      </div>
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;width:auto;">
-        <div>
-          <div style="font-size:12px;font-weight:700;color:#475569;" id="stuProgressLabel">Completed: 0%</div>
-          <div class="progress-wrap"><div class="progress-bar" id="stuProgressBar"></div></div>
+    <div class="workspace-split">
+      <aside class="sidebar" id="opSidebar">
+        <div class="sidebar-controls">
+          <div style="display:flex;gap:6px;">
+            <input type="text" id="opSearchInput" class="form-control" placeholder="🔍 Name, SL#, Aadhaar, School..." oninput="renderOperatorList()" />
+            <button class="btn btn-primary btn-sm" onclick="addNewStudent()">➕ Add</button>
+          </div>
+          <select id="opSchoolFilter" class="form-control" style="font-size:13px;" onchange="renderOperatorList()">
+            <option value="">🏫 All Schools</option>
+          </select>
+          <div class="filter-tabs">
+            <button class="filter-tab active" data-filter="ALL" onclick="setOpFilter('ALL', this)">All</button>
+            <button class="filter-tab" data-filter="PENDING" onclick="setOpFilter('PENDING', this)">Unfilled</button>
+            <button class="filter-tab" data-filter="NOFILES" onclick="setOpFilter('NOFILES', this)">No Docs</button>
+            <button class="filter-tab" data-filter="READY" onclick="setOpFilter('READY', this)">Ready</button>
+            <button class="filter-tab" data-filter="DONE" onclick="setOpFilter('DONE', this)">Done</button>
+          </div>
         </div>
-        <button class="btn btn-danger btn-sm" onclick="logoutStudent()">🚪 Logout / Switch</button>
-      </div>
-    </div>
+        <div id="opStudentList" class="student-list"></div>
+      </aside>
 
-    <div class="notice-card">
-      📱 <strong>Mobile Camera Supported:</strong> Tap <strong>📷 Camera</strong> on Divyang Certificate, Bonafide/Marksheet, or Bank Passbook to take a clear photo (or tap <strong>➕ Page</strong> for a 2nd page). It automatically converts into a crisp PDF!
-    </div>
+      <main class="op-editor-pane" id="opEditorPane">
+        <div class="op-sticky-header">
+          <div>
+            <h3 id="opTitle" style="font-size:16px;font-weight:800;">Select a student</h3>
+            <p id="opSub" style="font-size:12px;color:#475569;margin-top:2px;"></p>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+            <button class="btn btn-ghost btn-sm" onclick="navigateOperatorStudent(-1)">◀ Prev</button>
+            <button class="btn btn-ghost btn-sm" onclick="navigateOperatorStudent(1)">Next ▶</button>
+            <button class="btn btn-primary btn-sm" onclick="saveCurrentStudent('op', true)">💾 Save</button>
+            <button class="btn btn-success btn-sm" onclick="saveAndNextOperator()">💾 Save &amp; Next ▶</button>
+          </div>
+        </div>
 
-    <div id="stuFormContainer"></div>
-
-    <div class="bottom-save-bar">
-      <div>
-        <div style="font-size:15px;font-weight:800;color:#15803d;">Finished Checking Your Details?</div>
-        <div style="font-size:12px;color:#475569;">Tap below to submit everything safely.</div>
-      </div>
-      <button class="btn btn-success btn-lg" onclick="saveCurrentStudent('stu', true)">
-        💾 Save &amp; Submit My Details
-      </button>
+        <div id="opFormContainer"></div>
+      </main>
     </div>
   </section>
 
@@ -1494,121 +1493,379 @@
     }
 
 
-    function onAfterDocChange(stu) { calculateStudentProgress(stu); }
-    function onAfterFieldChange(stu) { calculateStudentProgress(stu); }
-    function onAfterSave(stu) { calculateStudentProgress(stu); }
+    let opFilter = "ALL";
+    let filteredOpList = [];
 
-    window.formatAadhaarInput = function(el) {
-      let v = el.value.replace(/\D/g, "").slice(0, 12);
-      let parts = [];
-      for (let i = 0; i < v.length; i += 4) parts.push(v.slice(i, i + 4));
-      el.value = parts.join(" ");
+    function onAfterDocChange() { renderOperatorList(); }
+    function onAfterFieldChange() { updateStats(); }
+    function onAfterSave(stu) { renderOperatorList(); refreshOpHeader(stu); }
+
+    window.toggleMobileSidebar = function() {
+      const sb = document.getElementById("opSidebar");
+      sb.style.display = sb.style.display === "none" ? "flex" : "none";
     };
 
-    window.toggleAltLogin = function() {
-      const b = document.getElementById("altLoginBox");
-      b.style.display = b.style.display === "none" ? "block" : "none";
-      if (b.style.display === "block") populateAltDropdown();
+    window.autoGenPassword = function() {
+      const stu = students.find(s => Number(s.SL_No) === Number(currentSlNo));
+      if (!stu) return;
+      const first = (stu.Student_Name || "Student").trim().split(/\s+/)[0].replace(/[^A-Za-z]/g, "");
+      const cap = first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();
+      const pwd = `${cap || "Student"}@2026`;
+      const el = document.getElementById("op_Password");
+      if (el) { el.value = pwd; el.classList.remove("empty-req"); }
+      stu.Password = pwd;
+      showToast(`⚡ Password set: ${pwd}`, "#1e40af");
     };
 
-    function populateAltDropdown() {
-      const sel = document.getElementById("selectStudentAlt");
-      sel.innerHTML = '<option value="">-- Choose Your Name & School --</option>' +
-        students.map(s => `<option value="${s.SL_No}">#${s.SL_No} - ${escHtml(s.Student_Name)} (${escHtml(s.Institute_Name || s.Original_School_Name)})</option>`).join("");
+    window.copySchoolAddress = function() {
+      const stu = students.find(s => Number(s.SL_No) === Number(currentSlNo));
+      if (!stu) return;
+      const donor = students.find(s =>
+        Number(s.SL_No) !== Number(stu.SL_No) &&
+        String(s.Institute_Name || "").trim() === String(stu.Institute_Name || "").trim() &&
+        String(s.Address_GP_Ward || "").trim() !== ""
+      );
+      if (!donor) return showToast("No filled student found yet for this school.", "#b45309");
+      for (const k of ["Address_GP_Ward","Address_Village","Address","PIN_Code"]) {
+        if (donor[k]) {
+          stu[k] = donor[k];
+          const el = document.getElementById("op_" + k);
+          if (el) { el.value = donor[k]; el.classList.remove("empty-req"); }
+        }
+      }
+      showToast(`📋 Copied GP/Address from #${donor.SL_No} (${donor.Student_Name})`, "#15803d");
+    };
+
+    function populateOperatorSchoolFilter() {
+      const sel = document.getElementById("opSchoolFilter");
+      const currentVal = sel.value;
+      const schools = [...new Set(students.map(s => String(s.Institute_Name || "").trim()).filter(Boolean))].sort();
+      sel.innerHTML = `<option value="">🏫 All Schools (${schools.length} Schools)</option>` +
+        schools.map(sc => `<option value="${escHtml(sc)}">${escHtml(sc)}</option>`).join("");
+      sel.value = currentVal;
     }
 
-    window.loginStudent = function() {
-      const raw = document.getElementById("inputAadhaar").value.replace(/\s+/g, "").trim();
-      const errEl = document.getElementById("loginError");
-      errEl.style.display = "none";
-      if (!raw) {
-        errEl.textContent = "Please enter your 12-digit Aadhaar Number.";
-        errEl.style.display = "block";
-        return;
-      }
-      let match = students.find(s => String(s.Unique_Or_Aadhaar_No || "").replace(/\s+/g, "") === raw);
-      if (!match) {
-        match = students.find(s => String(s.UDID_No || "").replace(/\s+/g, "").toUpperCase() === raw.toUpperCase());
-      }
-      if (!match) {
-        errEl.textContent = `Aadhaar '${raw}' was not found. Tap the link below to select your name from your school list.`;
-        errEl.style.display = "block";
-        return;
-      }
-      openStudentPortal(match.SL_No);
+    window.setOpFilter = function(fName, btnEl) {
+      opFilter = fName;
+      document.querySelectorAll(".filter-tab").forEach(b => b.classList.remove("active"));
+      if (btnEl) btnEl.classList.add("active");
+      renderOperatorList();
     };
 
-    window.loginStudentBySelect = function() {
-      const sl = document.getElementById("selectStudentAlt").value;
-      if (!sl) return alert("Please select your name from the list.");
-      openStudentPortal(Number(sl));
+    window.renderOperatorList = function() {
+      updateStats();
+      const q = (document.getElementById("opSearchInput").value || "").trim().toLowerCase();
+      const schFilter = (document.getElementById("opSchoolFilter").value || "").trim();
+      const container = document.getElementById("opStudentList");
+
+      filteredOpList = students.filter(s => {
+        const st = getStudentStatus(s);
+        const fCnt = Object.keys(filesStore[getStudentKey(s.SL_No)] || {}).length;
+        if (opFilter === "DONE" && st !== "DONE") return false;
+        if (opFilter === "READY" && st !== "READY") return false;
+        if (opFilter === "PENDING" && (st === "DONE" || st === "READY")) return false;
+        if (opFilter === "NOFILES" && fCnt >= 4) return false;
+        if (schFilter && String(s.Institute_Name || "").trim() !== schFilter) return false;
+        if (q) {
+          const hay = [s.SL_No, s.Student_Name, s.Unique_Or_Aadhaar_No, s.UDID_No, s.Institute_Name, s.Mobile_No].join(" ").toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      container.innerHTML = filteredOpList.map(s => {
+        const st = getStudentStatus(s);
+        const fCnt = Object.keys(filesStore[getStudentKey(s.SL_No)] || {}).length;
+        let badgeHtml = `<span class="badge badge-pend">Unfilled (${fCnt}/4)</span>`;
+        if (st === "DONE") badgeHtml = `<span class="badge badge-done">Done</span>`;
+        else if (st === "READY") badgeHtml = `<span class="badge badge-ready">Ready (${fCnt}/4)</span>`;
+        else if (st === "WARN") badgeHtml = `<span class="badge badge-warn">Check (${fCnt}/4)</span>`;
+
+        return `
+          <div class="student-item ${Number(s.SL_No) === Number(currentSlNo) ? 'active' : ''}" onclick="selectOpStudent(${s.SL_No})">
+            <div class="stu-top">
+              <span class="stu-name">${escHtml(s.Student_Name || 'Unnamed Student')}</span>
+              <span class="stu-sl">#${s.SL_No}</span>
+            </div>
+            <div class="stu-sub">
+              <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escHtml(s.Institute_Name || 'No School')} (${escHtml(s.Course_Class || '?')})</span>
+              ${badgeHtml}
+            </div>
+          </div>
+        `;
+      }).join("") || '<div style="padding:20px;text-align:center;color:#64748b;font-size:13px;">No matching students.</div>';
     };
 
-    function openStudentPortal(slNo) {
+    function refreshOpHeader(stu) {
+      document.getElementById("opTitle").textContent = `#${stu.SL_No} — ${stu.Student_Name || 'New Student'}`;
+      document.getElementById("opSub").textContent =
+        `Aadhaar: ${stu.Unique_Or_Aadhaar_No || 'MISSING'} • UDID: ${stu.UDID_No || 'N/A'} • School: ${stu.Institute_Name || 'MISSING'}`;
+    }
+
+    window.selectOpStudent = function(slNo) {
       currentSlNo = Number(slNo);
       const stu = students.find(s => Number(s.SL_No) === currentSlNo);
       if (!stu) return;
-
-      document.getElementById("studentLoginView").style.display = "none";
-      document.getElementById("studentPortalView").style.display = "flex";
-
-      document.getElementById("stuHeaderName").textContent = `${stu.Student_Name} (SL #${stu.SL_No})`;
-      document.getElementById("stuHeaderDetails").textContent =
-        `School: ${stu.Institute_Name || stu.Original_School_Name} • Class: ${stu.Course_Class || '?'} • UDID: ${stu.UDID_No || 'N/A'}`;
-
-      renderFormInto("stu", "stuFormContainer", stu);
-      calculateStudentProgress(stu);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      showToast(`👋 Welcome, ${stu.Student_Name}! Check & update your details.`, "#15803d");
-    }
-
-    window.logoutStudent = function() {
-      document.getElementById("studentPortalView").style.display = "none";
-      document.getElementById("studentLoginView").style.display = "flex";
-      document.getElementById("inputAadhaar").value = "";
-      document.getElementById("loginError").style.display = "none";
+      refreshOpHeader(stu);
+      renderFormInto("op", "opFormContainer", stu);
+      renderOperatorList();
     };
 
-    function calculateStudentProgress(stu) {
-      let filled = 0;
-      for (const k of REQUIRED_FOR_READY) {
-        if (String(stu[k] || "").trim() !== "") filled++;
+    window.navigateOperatorStudent = function(delta) {
+      const list = filteredOpList.length > 0 ? filteredOpList : students;
+      if (list.length === 0) return;
+      const idx = list.findIndex(s => Number(s.SL_No) === Number(currentSlNo));
+      let nextIdx = idx + delta;
+      if (nextIdx < 0) nextIdx = 0;
+      if (nextIdx >= list.length) nextIdx = list.length - 1;
+      selectOpStudent(list[nextIdx].SL_No);
+      document.getElementById("opEditorPane").scrollTop = 0;
+    };
+
+    window.saveAndNextOperator = async function() {
+      await saveCurrentStudent("op", true);
+      navigateOperatorStudent(1);
+    };
+
+    window.addNewStudent = async function() {
+      const maxSl = students.reduce((m, s) => Math.max(m, Number(s.SL_No) || 0), 0);
+      const newSl = maxSl + 1;
+      const schFilter = (document.getElementById("opSchoolFilter").value || "").trim();
+      const newStu = {
+        SL_No: newSl, Gender: "Male", Unique_Or_Aadhaar_No: "", Password: "",
+        Student_Name: `New Student #${newSl}`, Draft_Application_URL_Or_ID: "",
+        Department: "9", Scheme: "63", Institute_Type: "NON-SAMS", UDID_No: "",
+        Divyang_Certificate_PDF: "", Category: "ST", Religion: "Hindu",
+        Mobile_No: "", Alternative_Mobile_No: "", Email_ID: "",
+        Father_Name: "", Mother_Name: "", Guardian_Name: "", Profile_Photo: "",
+        Address_District: "Koraput", Address_Block_ULB: "Kotpad",
+        Address_GP_Ward: "", Address_Village: "", PIN_Code: "764058", Address: "",
+        Student_Level: "1", Institute_District: "Koraput", Institute_Block_ULB: "Kotpad",
+        Institute_Name: schFilter || "", Nature_Of_Course: "", Course_Class: "I",
+        Branch_Stream: "", Course_Year: "", Admission_Reg_No: "", Admission_Date: "02-04-2026",
+        Last_Exam_Class: "I", Last_Exam_Passing_Year: "2026",
+        Last_Exam_Total_Marks: "", Last_Exam_Secured_Marks: "", Last_Exam_Marksheet_PDF: "",
+        Bank_IFSC_Code: "", Account_Holder_Name: "", Bank_Account_No: "",
+        Aadhaar_Seeded: "Yes", Bank_Passbook_PDF: "", Automation_Status: "PENDING",
+        Last_Completed_Step: "", Last_Updated_At: "", Remarks: "Fresh", Other_Bonafide_PDF: ""
+      };
+      students.push(newStu);
+      await saveToIndexedDB();
+      document.getElementById("opSearchInput").value = "";
+      setOpFilter("ALL", document.querySelector('.filter-tab[data-filter="ALL"]'));
+      selectOpStudent(newSl);
+      showToast(`➕ Added Student #${newSl}. Enter details & click Save!`, "#1e40af");
+    };
+
+    function updateStats() {
+      let done = 0, ready = 0, warn = 0, pend = 0, fileCount = 0;
+      for (const s of students) {
+        const st = getStudentStatus(s);
+        if (st === "DONE") done++;
+        else if (st === "READY") ready++;
+        else if (st === "WARN") { warn++; pend++; }
+        else pend++;
+        const fObj = filesStore[getStudentKey(s.SL_No)] || {};
+        fileCount += Object.keys(fObj).filter(k => fObj[k] && fObj[k].dataUrl).length;
       }
-      const fObj = filesStore[getStudentKey(stu.SL_No)] || {};
-      const reqFiles = ["photo","divyang_pdf","marksheet_pdf","passbook_pdf"].filter(k => fObj[k] && fObj[k].dataUrl).length;
-      const pct = Math.round(((filled + reqFiles) / (REQUIRED_FOR_READY.length + 4)) * 100);
-      const bar = document.getElementById("stuProgressBar");
-      const lbl = document.getElementById("stuProgressLabel");
-      if (bar) bar.style.width = pct + "%";
-      if (lbl) lbl.textContent = `Completed: ${pct}% (${filled}/${REQUIRED_FOR_READY.length} fields, ${reqFiles}/4 docs)`;
+      document.getElementById("statTotal").textContent = students.length;
+      document.getElementById("statDone").textContent = done;
+      document.getElementById("statReady").textContent = ready;
+      document.getElementById("statPending").textContent = pend;
+      document.getElementById("statWarn").textContent = warn;
+      document.getElementById("statFiles").textContent = fileCount;
     }
 
-    async function bootstrapStudent() {
-      await loadFromIndexedDB();
-      populateAltDropdown();
+    // Text-safe Excel builder
+    function buildExcelWorkbookArrayBuffer() {
+      if (typeof XLSX === "undefined") {
+        throw new Error("Excel library (SheetJS) requires internet on first load.");
+      }
+      for (const s of students) reconcileStudentFilenames(s);
+      const aoa = [EXCEL_HEADERS];
+      for (const s of students) {
+        aoa.push(EXCEL_HEADERS.map(h => (s[h] !== undefined && s[h] !== null) ? String(s[h]) : ""));
+      }
+      const ws = XLSX.utils.aoa_to_sheet(aoa);
+      const range = XLSX.utils.decode_range(ws["!ref"]);
+      for (let R = 0; R <= range.e.r; R++) {
+        for (let C = 0; C <= range.e.c; C++) {
+          const addr = XLSX.utils.encode_cell({ r: R, c: C });
+          if (ws[addr]) { ws[addr].t = "s"; ws[addr].z = "@"; }
+        }
+      }
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Students_Data");
+      return XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    }
 
-      initFirebaseLive(
-        () => {
-          populateAltDropdown();
-          const portalVisible = document.getElementById("studentPortalView").style.display === "flex";
-          if (portalVisible && currentSlNo) {
-            const stu = students.find(s => Number(s.SL_No) === Number(currentSlNo));
-            if (stu) calculateStudentProgress(stu);
-          }
-        },
-        () => {
-          const portalVisible = document.getElementById("studentPortalView").style.display === "flex";
-          if (portalVisible && currentSlNo) {
-            const stu = students.find(s => Number(s.SL_No) === Number(currentSlNo));
-            if (stu) {
-              refreshUploadBoxes("stu", stu);
-              calculateStudentProgress(stu);
+    window.exportToExcelOnly = function() {
+      try {
+        const buf = buildExcelWorkbookArrayBuffer();
+        triggerDownload(
+          new Blob([buf], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }),
+          "students_template.xlsx"
+        );
+        showToast("📊 Downloaded updated students_template.xlsx!", "#15803d");
+      } catch (err) { alert(err.message); }
+    };
+
+    function buildFallbackStoreZip(entries) {
+      const crcTable = new Uint32Array(256);
+      for (let n = 0; n < 256; n++) {
+        let c = n;
+        for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+        crcTable[n] = c >>> 0;
+      }
+      function crc32(buf) {
+        let crc = 0xFFFFFFFF;
+        for (let i = 0; i < buf.length; i++) crc = crcTable[(crc ^ buf[i]) & 0xFF] ^ (crc >>> 8);
+        return (crc ^ 0xFFFFFFFF) >>> 0;
+      }
+      const enc = new TextEncoder();
+      const parts = [], central = [];
+      let offset = 0;
+      for (const entry of entries) {
+        const nameBytes = enc.encode(entry.name);
+        const data = entry.bytes instanceof Uint8Array ? entry.bytes : new Uint8Array(entry.bytes);
+        const crc = crc32(data);
+        const lh = new Uint8Array(30 + nameBytes.length);
+        const dv = new DataView(lh.buffer);
+        dv.setUint32(0, 0x04034B50, true); dv.setUint16(4, 20, true); dv.setUint16(8, 0, true);
+        dv.setUint32(14, crc, true); dv.setUint32(18, data.length, true); dv.setUint32(22, data.length, true);
+        dv.setUint16(26, nameBytes.length, true); lh.set(nameBytes, 30);
+
+        const cd = new Uint8Array(46 + nameBytes.length);
+        const cdv = new DataView(cd.buffer);
+        cdv.setUint32(0, 0x02014B50, true); cdv.setUint16(4, 20, true); cdv.setUint16(6, 20, true);
+        cdv.setUint16(10, 0, true); cdv.setUint32(16, crc, true); cdv.setUint32(20, data.length, true);
+        cdv.setUint32(24, data.length, true); cdv.setUint16(28, nameBytes.length, true);
+        cdv.setUint32(42, offset, true); cd.set(nameBytes, 46);
+
+        parts.push(lh, data); central.push(cd); offset += lh.length + data.length;
+      }
+      const cdSize = central.reduce((s, c) => s + c.length, 0);
+      const eocd = new Uint8Array(22);
+      const edv = new DataView(eocd.buffer);
+      edv.setUint32(0, 0x06054B50, true); edv.setUint16(8, entries.length, true);
+      edv.setUint16(10, entries.length, true); edv.setUint32(12, cdSize, true); edv.setUint32(16, offset, true);
+      return new Blob([...parts, ...central, eocd], { type: "application/zip" });
+    }
+
+    async function ensureEntryBytesForZip(slot, entry) {
+      if (!entry || !entry.dataUrl) return null;
+      if (slot.isImageOnly || entry.dataUrl.startsWith("data:application/pdf")) {
+        return dataUrlToUint8Array(entry.dataUrl);
+      }
+      // Guarantee certificate/bonafide/marksheet/passbook inside student_files/ is ALWAYS a real .pdf
+      if (entry.dataUrl.startsWith("data:image/")) {
+        const res = await imagesToPdfResult([dataUrlToBlob(entry.dataUrl)]);
+        return dataUrlToUint8Array(res.dataUrl);
+      }
+      return dataUrlToUint8Array(entry.dataUrl);
+    }
+
+    window.exportZipPackage = async function() {
+      showToast("📦 Packaging Excel + renamed photos & PDFs into ZIP...", "#1e40af");
+      try {
+        const xlsxBuf = buildExcelWorkbookArrayBuffer();
+        const zipEntries = [{ name: "students_template.xlsx", bytes: new Uint8Array(xlsxBuf) }];
+
+        let fileTotal = 0;
+        for (const stu of students) {
+          reconcileStudentFilenames(stu);
+          const fMap = filesStore[getStudentKey(stu.SL_No)] || {};
+          for (const slot of DOC_SLOTS) {
+            const entry = fMap[slot.key];
+            if (entry && entry.dataUrl) {
+              const fileBytes = await ensureEntryBytesForZip(slot, entry);
+              if (fileBytes) {
+                zipEntries.push({ name: `student_files/${entry.filename}`, bytes: fileBytes });
+                fileTotal++;
+              }
             }
           }
         }
+
+        const readme =
+          "BANISHREE SCHOLARSHIP 2026-27 (KOTPAD BLOCK) - EXPORT BUNDLE\n" +
+          "============================================================\n" +
+          `Students: ${students.length} | Renamed Photos & PDFs in student_files/: ${fileTotal}\n` +
+          "Extract both `students_template.xlsx` and `student_files/` into your automation folder.\n";
+        zipEntries.push({ name: "HOW_TO_USE.txt", bytes: new TextEncoder().encode(readme) });
+
+        let zipBlob;
+        if (typeof JSZip !== "undefined") {
+          const zip = new JSZip();
+          for (const e of zipEntries) zip.file(e.name, e.bytes);
+          zipBlob = await zip.generateAsync({ type: "blob" });
+        } else {
+          zipBlob = buildFallbackStoreZip(zipEntries);
+        }
+
+        const stamp = new Date().toISOString().slice(0, 10);
+        triggerDownload(zipBlob, `Banishree_Kotpad_Bundle_${stamp}.zip`);
+        showToast(`✅ Downloaded ZIP with students_template.xlsx + ${fileTotal} renamed files!`, "#15803d");
+      } catch (err) {
+        alert("ZIP export error: " + err.message);
+      }
+    };
+
+    function triggerDownload(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = filename; a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 6000);
+    }
+
+    window.exportFullJsonBackup = function() {
+      const stuMap = {};
+      for (const s of students) stuMap[getStudentKey(s.SL_No)] = s;
+      const blob = new Blob([JSON.stringify({ students: stuMap, files: filesStore }, null, 2)], { type: "application/json" });
+      triggerDownload(blob, "firebase_scholarship_export.json");
+      showToast("💾 Exported full JSON backup!", "#15803d");
+    };
+
+    window.importJsonBackup = async function(inputEl) {
+      const file = inputEl.files && inputEl.files[0];
+      if (!file) return;
+      try {
+        const data = JSON.parse(await file.text());
+        if (data.students) mergeRemoteStudents(data.students);
+        if (data.files && typeof data.files === "object") Object.assign(filesStore, data.files);
+        await saveToIndexedDB();
+        populateOperatorSchoolFilter();
+        renderOperatorList();
+        if (currentSlNo) selectOpStudent(currentSlNo);
+        showToast("📂 Backup imported & merged!", "#15803d");
+      } catch (err) {
+        alert("Invalid JSON backup: " + err.message);
+      } finally {
+        inputEl.value = "";
+      }
+    };
+
+    async function bootstrapOperator() {
+      await loadFromIndexedDB();
+      populateOperatorSchoolFilter();
+      renderOperatorList();
+      selectOpStudent(1);
+
+      initFirebaseLive(
+        () => {
+          populateOperatorSchoolFilter();
+          renderOperatorList();
+          const stu = students.find(s => Number(s.SL_No) === Number(currentSlNo));
+          if (stu) refreshOpHeader(stu);
+        },
+        () => {
+          renderOperatorList();
+          const stu = students.find(s => Number(s.SL_No) === Number(currentSlNo));
+          if (stu) refreshUploadBoxes("op", stu);
+        }
       );
     }
-    bootstrapStudent();
+    bootstrapOperator();
 
   </script>
 </body>
